@@ -1,0 +1,32 @@
+Answer
+
+drj$ for a in 0 1 2 3 4 5 6 7 8 9 ; do  for b in 0 1 2 3 4 5 6 7 8 9 ;
+do for c in 0 1 2 3 4 5 6 7 8 9 ; do for d in 0 1 2 3 4 5 6 7 8 9 ; do
+echo .. $a$b$c$d ; done ; done ; done ; done | dd obs=10000 | { head -1
+> /dev/null; head -1; }
+
+The first version of this program did not use dd and computed the wrong
+answer; indeed it produces different answers when run more than once:
+
+PRE
+drj$ manylines | { head -1 ; head -1 ; }
+.. 0000
+.. 0066
+drj$ manylines | { head -1 ; head -1 ; }
+.. 0000
+.. 0055
+drj$ manylines | { head -1 ; head -1 ; }
+.. 0000
+.. 0213
+drj$ manylines | { head -1 ; head -1 ; }
+.. 0000
+.. 0058
+/PRE
+
+Why is that? (A: because when called on a pipe, read() returns with less
+than a block when the pipe is nearly empty).
+
+is this any better as a version of manylines?
+
+while : ; do echo ''; done | head -9999 | nl -ba | while read a; do
+printf "%07d\n" "$a"; done
