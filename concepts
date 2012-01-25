@@ -1,0 +1,58 @@
+Concept                                                 Relevant Shell Command
+
+command
+arguments
+options
+non-optional options
+conventions (contrast with dd)                          dd ps tar
+shell variables
+environment                                             export env
+shell functions
+words
+globbing
+glomming
+(variable) substitution
+${foo}
+backtick aka command substitution                       xargs
+IFS
+PATH                                                    command type which
+builtins                                                type command
+"$@"
+$* (bad)
+$#
+assignment
+shift
+aliases (bad)
+pipes pipelines                                         time
+semicolon
+conjunctives (&& ||)
+control flow
+if
+for
+while
+: true false
+case
+set -e and so on
+stdin                                                   cat
+stdout                                                  tee
+stderr
+return code
+$?
+redirections
+file-system                                             cd
+current working directory                               pwd «env pwd»
+/dev/null
+/dev/urandom
+/dev/zero
+here documents
+quoting
+command group «{ }»
+sub-process
+sub-shell
+coprocess
+named pipes
+file descriptors
+/dev/fd
+signals                                                 kill
+jobs
+background command «&»

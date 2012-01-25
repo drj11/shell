@@ -1,0 +1,35 @@
+When is an option an argument?
+
+What if you've accidentally created a file called '-l' or '-' or something
+else that begins with a hypen and you want to remove it, or move it, or
+something like that?  (This actually happened to me on my first ever day
+of using Unix; I blame that on my somewhat experimental mood).  If you
+try «rm -l» then the '-l' will get treated as an option and not an
+argument:
+
+PRE
+drj$ rm -l
+rm: invalid option -- 'l'
+Try `rm --help' for more information.
+/PRE
+
+You have to trick *rm* into treating '-l' as an argument, not an option.
+There are two approaches: Use the '--' option which signals the end of
+the options, anything following is therefore an argument; or, call the
+file './-l', which does not start with a hypen and is therefore not an
+option.
+
+PRE
+rm ./-l
+rm -- -l
+/PRE
+
+Readers might be amused to hear that whilst I was writing this chapter I
+accidentally created a file whose name was the 2 bytes that are the
+utf-8 representation of the unicode character U+00A0 (NO-BREAK SPACE).
+That was quite tricky to remove too.
+
+Exercise: How do you create a file called '-l'?  There are many
+solutions.
+
+Exercise: What is the shortest way?

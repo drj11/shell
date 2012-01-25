@@ -1,0 +1,38 @@
+sidebox Process
+
+A process is a fundamental concept in Unix.  A Unix process can be
+independently scheduled by the kernel, and generally has a separate
+memory address space from other processes (although processes can
+share read-only portions of their memory, and may arrange to share
+other memory).  Modifications that a process makes to its own memory
+are not generally shared with another process.  A subshell runs in
+another process, so any modifications to the subshell's environment, or
+shell variables, are not picked up by the parent (super-)shell.  This
+can be a useful way of deliberately isolating changes.
+
+Each process also has a separate working directory, and it can
+sometimes be useful to change current working directory in a subshell,
+to avoid changing the working directory of the parent shell:
+
+CODE
+( cd /etc/init.d; ./httpd start )
+/CODE
+
+It can be useful to use this in order to get a tarfile with nice neat
+filenames:
+
+CODE
+( cd /tmp; tar cf /tmp/foo.tar foo )
+/CODE
+
+
+Exercise: In the above example with *tar*, what happens if you don't use
+the *cd* and just do «tar cf /tmp/foo.tar /tmp/foo»?
+
+Exercise: Why is that bad?
+
+Exercise: What if you use the *cd*, but don't use the subshell?
+
+Exercise: Why is that bad?
+
+
