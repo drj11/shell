@@ -1,0 +1,7 @@
+#!/bin/sh
+# rr
+# Output a random hex string.
+
+set $(dd bs=4 count=1 < /dev/urandom 2>/dev/null | od -t x1 | head -1)
+shift
+echo "$@" | tr -d ' '

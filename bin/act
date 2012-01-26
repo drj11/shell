@@ -1,0 +1,19 @@
+#!sh
+# source this script with:
+# . bin/act
+
+if ! [ -f bin/act ]
+then
+    echo "Please source from top-level directory"
+    exit 4
+fi
+
+OLD_PATH="$PATH"
+PATH="$(pwd)/bin:$PATH"
+OLD_PS1="$PS1"
+PS1="!$(basename $(pwd))!$PS1"
+
+deact () {
+    PATH="$OLD_PATH"
+    PS1="$OLD_PS1"
+}

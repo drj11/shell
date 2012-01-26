@@ -1,11 +1,51 @@
-Answer
+Answer for Exercise 27db90d3
 
-drj$ for a in 0 1 2 3 4 5 6 7 8 9 ; do  for b in 0 1 2 3 4 5 6 7 8 9 ;
-do for c in 0 1 2 3 4 5 6 7 8 9 ; do for d in 0 1 2 3 4 5 6 7 8 9 ; do
-echo .. $a$b$c$d ; done ; done ; done ; done | dd obs=10000 | { head -1
-> /dev/null; head -1; }
+The strategy will be to create an output stream where we can tell, by
+inspecting the contents of the stream, where we are in the stream.  A
+series of fixed sized records with each record having a sequential count
+should be okay.
 
-The first version of this program did not use dd and computed the wrong
+CODE
+manylines () {
+for a in 0 1 2 3 4 5 6 7 8 9 ; do
+for b in 0 1 2 3 4 5 6 7 8 9 ; do
+for c in 0 1 2 3 4 5 6 7 8 9 ; do
+for d in 0 1 2 3 4 5 6 7 8 9 ; do
+echo .. $a$b$c$d
+done
+done
+done
+done | dd obs=10000
+}
+/CODE
+
+Each line is 8 bytes long and each line contains a 4 digit number.  We
+output 10000 lines which is 80000 bytes.
+
+Now we use this in a pipeline:
+
+CODE
+manylines | { head -1 > /dev/null; head -2; }
+/CODE
+
+We already know that the first 'head' will consume some of the input
+(hopefully not all!); the output from the second 'head' will tell us
+how much input the first 'head' consumed.  Our lines are 8 bytes long,
+which we guess will divide into whatever block size 'head' uses, but if
+it does not the first line output will be truncated, but the second one
+will be complete (which is why we use 'head -2').
+
+On my Ubuntu laptop this gives the output:
+
+PRE
+.. 1024
+.. 1025
+/PRE
+
+Indicating the first 'head' consumed exactly 1024 lines, which is 8192
+bytes (2**12): A very traditional block size.
+
+The first version of this program did not use 'dd' and computed the wrong
 answer; indeed it produces different answers when run more than once:
 
 PRE
@@ -23,10 +63,27 @@ drj$ manylines | { head -1 ; head -1 ; }
 .. 0058
 /PRE
 
-Why is that? (A: because when called on a pipe, read() returns with less
-than a block when the pipe is nearly empty).
+Why is that? It because the manylines program produces output into the
+pipe fairly slowly, and when 'head' reads the contents of the pipe, my
+Linux kernel returns a partial block, so 'head' will read only as much
+data as manylines has written into the pipe at the point that 'head'
+made the system call.
 
-is this any better as a version of manylines?
+Exercise: Why does 'dd' help?
 
-while : ; do echo ''; done | head -9999 | nl -ba | while read a; do
-printf "%07d\n" "$a"; done
+Exercise: Compare the above implementation of manylines with this one:
+
+CODE
+manylines () {
+while : ; do echo ''; done |
+head -9999 |
+nl -ba |
+while read a; do
+printf "%07d\n" "$a"
+done
+}
+/CODE
+
+Which is better?
+
+Exercise: Can you think of another way to write manylines? Is it better?

@@ -1,0 +1,8 @@
+#!/bin/sh
+# xcode
+# Extract the CODE blocks from a text file.
+
+awk '
+  /^\/CODE/ {p=0}
+  p
+  /^CODE/ {p=1}' "$@"

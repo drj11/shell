@@ -15,7 +15,7 @@ ps u | sort -n -k 6 | { head -1 ; tail -1; }
 does not.
 
 
-Exercise: Recall that the problem with 'head' above was that it consumed
-more of its input than just the 1 line that it required.  'head'
-reads it's input in blocks.  Write a program to estimate the block size
-used by 'head'.
+Exercise 27db90d3: Recall that the problem with 'head' above was that it
+consumed more of its input than just the 1 line that it required;
+'head' reads its input in blocks.  Write a program to estimate the
+block size used by 'head'.

@@ -1,6 +1,27 @@
+Book Titles:
+
+Shell for the Working Programmer
+Modern Shell Programming
+Agile Shell Programming
+3rd Millenium Shell Programming 
+
+Things we might implement as a practical project for the book:
+
 some sort of server, using netcat
 log file parser
 twitter client
-shell package manager
+shell package manager: shark, shrimp
 web development framework
 buildout/deploy templating system, like puppet.
+describe the dependencies between chapters and sideboxes; then use tsort
+  to check that the book, as a linear sequence, does not violate any
+  dependency.
+
+
+Names containing 'sh':
+  * Animals
+  ** shrimp
+  ** shark
+  ** sheep
+  * Plantae
+  ** Ash
