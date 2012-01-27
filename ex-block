@@ -7,15 +7,15 @@ should be okay.
 
 CODE
 manylines () {
-for a in 0 1 2 3 4 5 6 7 8 9 ; do
-for b in 0 1 2 3 4 5 6 7 8 9 ; do
-for c in 0 1 2 3 4 5 6 7 8 9 ; do
-for d in 0 1 2 3 4 5 6 7 8 9 ; do
-echo .. $a$b$c$d
-done
-done
-done
-done | dd obs=10000
+  for a in 0 1 2 3 4 5 6 7 8 9 ; do
+    for b in 0 1 2 3 4 5 6 7 8 9 ; do
+      for c in 0 1 2 3 4 5 6 7 8 9 ; do
+        for d in 0 1 2 3 4 5 6 7 8 9 ; do
+          echo .. $a$b$c$d
+        done
+      done
+    done
+  done | dd obs=10000
 }
 /CODE
 
@@ -75,12 +75,12 @@ Exercise: Compare the above implementation of manylines with this one:
 
 CODE
 manylines () {
-while : ; do echo ''; done |
-head -9999 |
-nl -ba |
-while read a; do
-printf "%07d\n" "$a"
-done
+  while : ; do echo ''; done |
+  head -9999 |
+  nl -ba |
+  while read a; do
+    printf "%07d\n" "$a"
+  done
 }
 /CODE
 
