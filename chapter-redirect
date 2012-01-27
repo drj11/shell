@@ -1,0 +1,67 @@
+Redirection
+
+The usual place for the output of a command or pipeline is the terminal
+(tty).  A redirection is used when you want the output to go to a file,
+or one of a number of other slightly special places.
+
+blah blah blah
+
+I find that using 'dd' often makes me to redirect (or close) stderr.  In
+interactive use its output on stderr can be quite useful; in shell
+programs it can get in the way.  Part of my 'rh' program gets 4 bytes
+from the random device:
+
+CODE
+dd bs=4 count=1 < /dev/urandom
+/CODE
+
+Not only does this send 4 random bytes to my terminal (fun!), 'dd'
+writes "informative" messages on stderr:
+
+PRE
+!shell!drj$ dd bs=4 count=1 < /dev/random
+fwK
+1+0 records in
+1+0 records out
+4 bytes (4 B) copied, 6.8606e-05 s, 58.3 kB/s
+/PRE
+
+In the published version of 'rh' stderr has been redirected to /dev/null:
+
+CODE
+dd bs=4 count=1 < /dev/urandom 2> /dev/null | ... something
+/CODE
+
+
+As well as redirecting stdout or stderr to files, a redirection can be
+made to another file descriptor, duplicating that file descriptor
+(system programmers may wish to note that this is implemented using
+dup2()).
+
+One could (and in fact, I did) write a program called 'err' that is like
+'echo' but writes output to stderr instead of stdout.  It will be handy
+in some of the explanations that follow.
+
+CODE
+err () { echo "$@" 1>&2 ; }
+/CODE
+
+
+Exercise: The lexical rules are a bit obscure; what is the difference
+between the following two commands?
+
+CODE
+echo 1 2 > /dev/null
+echo 1 2> /dev/null
+/CODE
+
+Exercise: Why is it a bad idea to type either of the following?
+
+CODE
+exec <&-
+exec >&-
+/CODE
+
+Exercise: Your friendly local Shell programming mentor has typed
+'exec >&-' at your prompt while you were making tea.  How do you recover
+without closing the window?

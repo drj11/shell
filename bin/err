@@ -1,0 +1,5 @@
+#!/bin/sh
+# err
+# Echoes arguments to stderr
+
+echo "$@" 1>&2

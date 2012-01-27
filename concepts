@@ -36,6 +36,7 @@ set -e and so on
 stdin                                                   cat
 stdout                                                  tee
 stderr
+exec
 return code
 $?
 redirections
