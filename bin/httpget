@@ -1,0 +1,21 @@
+#!/bin/sh
+# httpget
+# HTTP 1.1 client.
+
+prog=$(basename "$0")
+usage="$prog URL"
+
+die () {
+    echo "$1" 1>&2
+    exit 99
+}
+
+# Check that required program is installed.
+nc -h 2>&- || die "Could not find required programme 'nc'"
+
+URL="$1"
+# Syntax check URL first
+host=$(echo "$URL" | sed 's,[^/]*//,,;s,[:/].*,,')
+# :todo: fixme
+port=80
+echo "GET $URL HTTP/1.1\r\n\r" | nc "$host" "$port"
