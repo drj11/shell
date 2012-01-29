@@ -1,0 +1,9 @@
+Isn't : just the best command ever?
+
+By the way, in POSIX this is supposed to set the variable:
+
+CODE
+a=b :
+/CODE
+
+But if you try it in bash, then it has no effect.
