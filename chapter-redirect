@@ -4,10 +4,40 @@ The usual place for the output of a command or pipeline is the terminal
 (tty).  A redirection is used when you want the output to go to a file,
 or one of a number of other slightly special places.
 
-blah blah blah
+CODE
+cat chapter*.tex > book.tex
+/CODE
 
-I find that using 'dd' often makes me to redirect (or close) stderr.  In
-interactive use its output on stderr can be quite useful; in shell
+Recall that a program can write output to both stdout and stderr.
+stderr is redirected by using '2>' instead of '>'.
+
+CODE
+cc *.c 2> errors
+/CODE
+
+If the file already exists then redirecting to it will empty it
+(*truncate* is the typical Unix term) first; if it does not exist it
+will be created.  This in itself can be a useful thing to do.  Recall
+that ':' is the command that does nothing, we can use it with a redirect
+to create an empty file:
+
+CODE
+: > newfile
+/CODE
+
+It turns out that it's legal to use no command at all with a
+redirection:
+
+CODE
+> newfile
+/CODE
+
+
+
+
+I find that using 'dd' often makes me to redirect (or close) stderr.  'dd'
+output a summary to stderr in normal operation.  In
+interactive use that can be quite useful; in shell
 programs it can get in the way.  Part of my 'rh' program gets 4 bytes
 from the random device:
 
@@ -38,6 +68,8 @@ made to another file descriptor, duplicating that file descriptor
 (system programmers may wish to note that this is implemented using
 dup2()).
 
+
+
 One could (and in fact, I did) write a program called 'err' that is like
 'echo' but writes output to stderr instead of stdout.  It will be handy
 in some of the explanations that follow.
@@ -45,6 +77,8 @@ in some of the explanations that follow.
 CODE
 err () { echo "$@" 1>&2 ; }
 /CODE
+
+
 
 
 Exercise: The lexical rules are a bit obscure; what is the difference
