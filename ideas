@@ -18,6 +18,7 @@ twitter client
 shell package manager: shark, shrimp
 web development framework
 buildout/deploy templating system, like puppet.
+BDD/TDD test framework.
 describe the dependencies between chapters and sideboxes; then use tsort
   to check that the book, as a linear sequence, does not violate any
   dependency.
@@ -28,5 +29,13 @@ Names containing 'sh':
   ** shrimp
   ** shark
   ** sheep
+  ** shrew
+  ** bush baby
+  ** fish
+  ** dogfish
+  ** jellyfish
   * Plantae
   ** Ash
+  ** rush
+  ** shamrock
+  ** nightshade
