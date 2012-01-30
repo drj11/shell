@@ -1,0 +1,8 @@
+In ksh/bash but not POSIX
+
+[[
+select
+
+SUS requires that the shell run as a script a file found on the PATH
+that is not executable.  bash does not do this.
+

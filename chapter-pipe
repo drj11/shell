@@ -1,0 +1,78 @@
+(Possibly the first chapter?)
+
+If you've been using Unix for a little while, you've probably come
+across the command line.  When you use the command line, you're
+interacting with a program called *the shell*, or sometimes just *shell*.
+*shell* is a programming language, and the commands you type at the
+command line are programs in *shell*.  Usually very simple ones.  Here
+is a program that writes a traditional greeting to the output:
+
+CODE
+echo Hello, world!
+/CODE
+
+There is more than one *shell*, and they don't all implement the same
+programming language.  In this book I mostly refer to any shell that
+implements the Single Unix Specification Shell Command Language.  The
+GNU project's Bash shell ant AT&T's Korn shell both implement this
+specification (more or less) and it's been pretty hard to find a version
+of Unix that doesn't ship either one of those shells or another equally
+good shell as /bin/sh since about the year 2000.  There are some minor
+deviations.  Bash is common enough to be important, but there are some
+ways in which it is not SUS compliant; I'll mention those as they come
+up.  Many Unix systems supply utilities that are not part of SUS, or
+they implement extra features that are not specified; where practical I
+avoid these, but when they implement features taht are not covered in
+SUS then I'll use them, and note that they're not standard.
+@@ Move to sidebox? @@
+
+In the above example 'echo' is the name of a *command*, and the
+remainder of the line form the *arguments* to that command.  'echo' is a
+command that writes its arguments to its output.
+
+There is a default place that commands write output to, it is called
+*standard output*.  I shall call it *stdout* for short, and to emphasise
+that it has a technical meaning.
+
+Although 'echo' is a pretty simple command, it sees a lot of use in
+shell programs, as we'll see later.
+
+An even simpler command is ':', the null utility:
+
+CODE
+: Hello, world!
+/CODE
+
+If you tried this example, you'd see that it did nothing.  This command
+is surprisingly useful, and is well worth remembering.  It definitely
+features later.
+
+Programming is about combining simple parts to form large programs.
+Shell has several ways to combine parts, one of which was unique to
+shell for a long time: The pipe:
+
+CODE
+ls /usr/bin | head
+/CODE
+
+This is two *simple commands* connected by a *pipe* to form a
+*pipeline*.  Shell arranges that the stdout of 'ls /usr/bin' is
+connected to the input of 'head'.  Like stdout for output, all commands
+have a default place for input, this is *standard input*, and I shall
+call it *stdin*.  'head' reads lines from *stdin* and copies them to its
+output, stopping after it has copied 10 lines.  Thus this pipeline shows
+the first 10 files in '/usr/bin' (which has way more than 10 files in it
+on my system, and probably yours).
+
+It's worth noting that all commands have a *stdin* even if they don't
+make use of it:
+
+CODE
+ls /usr/bin | echo ignored
+/CODE
+
+That is a pipeline that writes a list of the files in '/usr/bin' to the
+command 'echo ignored' which ignores its input and writes out 'ignored'
+to *stdout*.  Following the great Unix tradition of not preventing you
+from doing something that is silly or stupid, it is not an error of any
+sort to send output to a command that ignores its input.
