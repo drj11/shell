@@ -33,6 +33,7 @@ while
 : true false
 case
 set -e and so on
+set --
 stdin                                                   cat
 stdout                                                  tee
 stderr
@@ -54,6 +55,6 @@ coprocess
 named pipes
 file descriptors
 /dev/fd
-signals                                                 kill
+signals                                                 kill trap
 jobs
 background command «&»

@@ -3,6 +3,8 @@ Misc
 get from my blog the script that RB uses to generate passwords that
 ends 'exec foo...', and explain why.
 
+"| sh" versus backtick versus xargs versus "while read a"
+
 Book Titles:
 
 Shell for the Working Programmer
