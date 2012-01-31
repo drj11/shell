@@ -1,6 +1,8 @@
 #!/bin/sh
 # httpget
 # HTTP 1.1 client.
+#
+# http://www.ietf.org/rfc/rfc2616.txt for the HTTP spec.
 
 prog=$(basename "$0")
 usage="$prog URL"
