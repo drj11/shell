@@ -62,6 +62,16 @@ CODE
 dd bs=4 count=1 < /dev/urandom 2> /dev/null | ... something
 /CODE
 
+Another one:
+
+CODE
+rmdir * 2> /dev/null
+/CODE
+
+Which will remove all directories, in the current directory, that are
+empty; any complaints from 'rmdir' about "Directory not empty" are
+sent to /dev/null.
+
 
 As well as redirecting stdout or stderr to files, a redirection can be
 made to another file descriptor, duplicating that file descriptor
