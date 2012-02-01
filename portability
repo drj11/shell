@@ -3,6 +3,14 @@ In ksh/bash but not POSIX
 [[
 select
 
+In bash but not POSIX
+source
+
+bash requires that the body of a function definition has braces around
+it.  This is good programming style, but is not actually required by
+POSIX.
+
 SUS requires that the shell run as a script a file found on the PATH
-that is not executable.  bash does not do this.
+that is not executable.  bash does not do this.  I was actually quite
+surprised to find this in the spec.
 
