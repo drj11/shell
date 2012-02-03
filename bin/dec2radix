@@ -1,0 +1,21 @@
+#!/bin/sh
+# dec2radix
+# Decimal to Arbitrary Radix conversion
+
+usage="dec2radix radix decimal"
+
+expand () {
+    # Prepend to $1 the radix $2 expansion for $3, and output result.
+    if [ "$3" -eq 0 ] ; then
+        echo "$1"
+    else
+        expand $(($3 % $2))"$1" "$2" $(($3 / $2))
+    fi
+}
+
+# Special case for 0
+if [ "$2" -eq 0 ] ; then
+    echo 0
+else
+    expand "" "$@"
+fi
