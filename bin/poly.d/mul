@@ -6,6 +6,12 @@
 # separated, one polynomial per argument; typically this will require
 # quotes.  Each list should be sorted into numerically increasing order.
 
+# Generating Polynomial
+# According to Single Unix Specification, the CRC32 polynomial has the
+# (non-zero) coefficients:
+GP="0 1 2 4 5 7 8 10 11 12 16 22 23 26 32"
+
+
 product () {
     cumprod "" "$1" "$2"
 }
@@ -30,7 +36,7 @@ add () {
     # Recall that in GF(2), 1+1=0, hence we combine all supplied
     # exponents and eliminate duplicates.
     echo $(
-      for p in $1 $2; do echo "$p"; done | sort | uniq -c | 
+      for p in $1 $2; do echo "$p"; done | sort -n | uniq -c | 
         awk '$1 == 1 {print $2}' )
 }
 
@@ -47,14 +53,39 @@ divx () {
 # Takes one polynomial, each exponent as a separate argument.
 mulx () {
     # Multiply the polynomial by x, increasing all exponents by 1.
-    # :todo: Take remainder on division by the quotient polynomial.
-    echo $(for p in "$@"; do echo $(($p + 1)); done)
+    set -- $(for p in "$@"; do echo $(($p + 1)); done)
+    # Rare and correct uses of $*
+    if hasexponent 32 "$*" ; then
+        add "$*" "$GP"
+        return
+    fi
+    echo "$@"
+    return
 }
 
 # Takes one polynomial, each exponent as a separate argument.
 hasunit () {
     # true when the polynomial has a non-zero unit term; false otherwise.
     [ "$1" -eq 0 ]
+}
+hasexponent () {
+    # true when polynomial $2 has the exponent $1.
+    if [ -z "$2" ] ; then
+        return 1
+    fi
+    if [ "$1" = "$(head $2)" ] ; then
+        return 0
+    fi
+    hasexponent "$1" "$(tail $2)"
+}
+head () {
+    # Output the first argument.
+    echo "$1"
+}
+tail () {
+    # Ouput all but the first argument.
+    shift
+    echo "$@"
 }
 
 Test () {
@@ -70,6 +101,7 @@ Test () {
     [ "$(add "0 1 2" "1 2 3")" = "0 3" ] || die
     [ "$(cumprod '' "0 1 2" "0 1 2")" = "0 2 4" ] || die
     [ "$(product "1 2 3" "0 2 4")" = "1 2 4 6 7" ] || die
+    [ "$(product "0 5" "1 5")" = "1 5 6 10" ] || die
 }
 
 Main () {
