@@ -1,6 +1,0 @@
-#!/bin/sh
-# poly
-# Prefix for polynomial commands:
-# poly mul ...
-
-PATH="$(which poly).d":"$PATH" "$@"

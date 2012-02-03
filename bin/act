@@ -9,9 +9,23 @@ then
 fi
 
 OLD_PATH="$PATH"
-PATH="$(pwd)/bin:$PATH"
+bindir="$(pwd)/bin"
+PATH="$bindir:$PATH"
 OLD_PS1="$PS1"
 PS1="!$(basename $(pwd))!$PS1"
+
+# For each blah.m directory in bin, add a prefix command for it.
+for d in $(ls -d "$bindir"/*.m 2>&-) ; do
+    cmd="${d%.m}"
+    cat > "$cmd" << EOF
+#!/bin/sh
+# $cmd
+# Generic prefix command
+
+PATH="\$(which $(basename "$cmd")).m":"\$PATH" "\$@"
+EOF
+    chmod +x "$cmd"
+done
 
 deact () {
     PATH="$OLD_PATH"
