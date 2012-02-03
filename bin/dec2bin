@@ -1,0 +1,19 @@
+#!/bin/sh
+# dec2bin
+# Decimal to Binary conversion
+
+expand () {
+    # Prepend to $1 the binary expansion for $2, and output result.
+    if [ "$2" -eq 0 ] ; then
+        echo "$1"
+    else
+        expand $(($2 & 1))"$1" $(($2 >> 1))
+    fi
+}
+
+# Special case for 0
+if [ "$1" -eq 0 ] ; then
+    echo 0
+else
+    expand "" "$1"
+fi
