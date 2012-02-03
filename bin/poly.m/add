@@ -1,0 +1,22 @@
+#!/bin/sh
+# poly add
+# Add two polynomials over GF(2).
+# Each input polynomial should be a list of small integers, space
+# separated, one polynomial per argument; typically this will require
+# quotes.  Each list should be sorted into numerically increasing order.
+
+# Takes 2 polynomials, one per argument.
+add () {
+    # The polynomial sum of $1 and $2.
+    # Recall that in GF(2), 1+1=0, hence we combine all supplied
+    # exponents and eliminate duplicates.
+    echo $(
+      for p in $1 $2; do echo "$p"; done | sort -n | uniq -c | 
+        awk '$1 == 1 {print $2}' )
+}
+
+Main () {
+    add "$@"
+}
+
+[ -n "$SHTEST" ] || Main "$@"

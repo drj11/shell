@@ -1,0 +1,82 @@
+#!/bin/sh
+# cksum
+# POSIX cksum command
+
+topoly () {
+    # $1 : decimal to be convert to poly
+    # $2 : number of shifts so far
+    # $3 onwards : exponent value
+    if [ "$1" -eq 0 ] ; then
+        shift 2
+        echo "$@"
+        return
+    fi
+    if [ $(($1 & 1)) -ne 0 ] ; then
+        topoly "$(($1 >> 1))" "$(($2+1))" $(shift 2;echo "$@") "$2"
+    else
+        topoly "$(($1 >> 1))" "$(($2+1))" $(shift 2;echo "$@")
+    fi
+}
+
+octet2poly () {
+    topoly "$1" 0
+}
+
+Residue () {
+    # Handle the file, one octet at a time.
+    # Residue polynomial
+    residue=""
+    count=0
+    od -t u1 -A n -v "$1" | {
+        while read a; do
+            for octet in $a ; do
+                count=$(($count + 1))
+                residue=$(poly mul "$residue" 8)
+                residue="$(poly add "$(octet2poly "$octet")" "$residue")"
+            done
+        done
+        echo $count $residue
+    }
+}
+
+Main () {
+    named="${1+yes}"
+    file="${1--}"
+    set -- $(Residue "$file")
+    fcount="$1"
+    shift
+    # Residue polynomial
+    residue="$@"
+
+    # Handle the file length, one bit at a time.
+    cb=$(dec2bin "$fcount")
+    x=$(echo "$cb" | wc -c)
+    trim=$((7 & ($x-2) ^ 7))
+    while [ "$trim" -gt 0 ] ; do
+        cb="0$cb"
+        trim=$(($trim-1))
+    done
+
+    count=0
+    for bit in $(echo "$cb" | sed 's/./ &/g') ; do
+        count=$(($count + 1))
+        residue=$(poly mul "$residue" 1)
+        if [ "$bit" -eq 1 ] ; then
+            residue=$(poly add 0 "$residue")
+        fi
+    done
+    [ $(($count % 8)) -eq 0 ] || die "count $count not divisible by 8"
+
+    # Multiple by x**32, in two steps.
+    residue="$(poly mul "$(poly mul "$residue" 16)" 16)"
+    echo -n $(
+      echo "$residue" |
+        sed 's/ /+/g;s/[0-9][0-9]*/2^&/g;s/.*/2^32-1-(&)/' |
+        bc) "$fcount"
+    if [ -n "$named" ] ; then
+        echo " $file"
+    else
+        echo
+    fi
+}
+[ -n "$SHTEST" ] || Main "$@"
