@@ -1,0 +1,14 @@
+#!/bin/sh
+# rd
+# Output a random decimal number.
+
+usage="rd [n]
+Output random decimal number. Minimum is 0, maximum is n-1, or 2**32-1
+if n is not supplied."
+
+x=$(dd bs=4 count=1 < /dev/urandom 2> /dev/null | od -A n -t u4 | tr -d ' ')
+if [ -n "$1" ] ; then
+    echo $(($x % $1))
+else
+    echo "$x"
+fi

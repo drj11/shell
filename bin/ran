@@ -1,0 +1,21 @@
+#!/bin/sh
+# ran
+# range of numbers
+usage="ran [b] l [s]
+output a sequence of numbers, one per line, from *b* (defaults to 0) up
+to but not including *l*, in steps of *s* (defaults to 1)."
+
+case "$#" in
+  1) b=0;l="$1";s=1;;
+  2|3) b="$1";l="$2";s="${3:-1}";;
+  *) echo "$usage" 1>&2;exit 99;;
+esac
+
+x="$b"
+while
+    echo "$x"
+    x=$(($x+$s))
+    [ "$x" -lt "$l" ]
+do :
+done
+exit 0
