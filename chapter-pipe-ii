@@ -1,0 +1,63 @@
+Pipelines Redux
+
+Iteration and output
+
+Imagine we have a program called *list* that produces a list of items:
+
+CODE
+list () {
+    echo box
+    echo zea
+    echo eft
+}
+/CODE
+
+Many Unix utilities have an implicit loop over their arguments, so we
+can do something for each item in the list.  In the examples that follow
+I use the command 'wc', but it could be anything.  'wc' iterate over
+each of its arguments:
+
+CODE
+wc $(list)
+/CODE
+
+If *list* produces large amount of output then we may need to use
+'xargs':
+
+CODE
+list | xargs wc
+/CODE
+
+We can also use a loop:
+CODE
+list | while read a; do wc "$a"; done
+/CODE
+
+Perhaps more radically, we can dynamically create a shell script and
+execute it:
+CODE
+list | sed 's/.*/wc &/' | sh
+/CODE
+
+At some level these are all conceptually the same, a command produces a
+list of items and another command is executed for each one.  The details
+vary: 'wc' outputs a total if invoked with more than one argument, so
+that total will be suppressed if using either the 'while' form or the
+'| sh' form, and if using 'xargs' a total may appear more than once if
+the list is very long; performance will vary, the looping forms invoke
+'wc' once for each item in the list; the "| sh" form does not cope with
+spaces in filenames very well.
+
+The last form can be useful interactively for modest sized lists.  One
+can preview the dynamic script by leaving off the "| sh" at the end,
+fiddling with the 'sed' commands until the script looks right, and then
+finally executing it by add "| sh".
+
+In this fairly typical example, I had created a file m1.txt and for
+testing purposes wanted it copied to files m2.txt through to m12.txt:
+
+CODE
+ran 2 13 | sed 's/.*/cp m1.txt m&.txt/' | sh
+/CODE
+
+(recall 'ran' from chapter XX)
