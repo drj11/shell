@@ -1,5 +1,6 @@
 Commands and Pipelines
 Files and Redirections
+What the Shell sees; what the command sees
 Loops and Testing
 Arguments, Options, Variables
 backquote
@@ -7,6 +8,6 @@ Environment, Subshell, Process
 Pipelines II and Functions
 Arithmetic Expansion
 Portability and POSIX
-Unix Kernal Exposed, Blocks, Redirections II
-sed and awk
+Unix Kernel Exposed, Blocks, Redirections II
+sed and awk (and bc?)
 find, grep, ls
