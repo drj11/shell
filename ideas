@@ -5,6 +5,13 @@ ends 'exec foo...', and explain why.
 
 "| sh" versus backtick versus xargs versus "while read a"
 
+Sparklines in shell: https://github.com/holman/spark
+echo *.py versus ls *.py
+
+Jonathan Dursi's notes: not bad:
+https://github.com/thehackerwithin/PyTrieste/wiki/Lesson1-TheUnixShell
+classically scripty.
+
 Book Titles:
 
 Shell for the Working Programmer
@@ -15,6 +22,8 @@ Agile Shell Programming
 Things we might implement as a practical project for the book:
 
 some sort of server, using netcat
+a thing like pexpect
+telnet server
 log file parser
 twitter client
 shell package manager: shark, shrimp
@@ -23,7 +32,8 @@ buildout/deploy templating system, like puppet.
 BDD/TDD test framework.
 describe the dependencies between chapters and sideboxes; then use tsort
   to check that the book, as a linear sequence, does not violate any
-  dependency.
+  dependency. (this would be both a project for the book, and a
+  test that the book is "correct")
 
 
 Names containing 'sh':
