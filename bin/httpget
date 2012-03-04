@@ -13,7 +13,7 @@ die () {
 }
 
 # Check that required program is installed.
-nc -h 2>&- || die "Could not find required programme 'nc'"
+nc -h 2>&- || die "Could not find required program 'nc'"
 
 URL="$1"
 # Syntax check URL first
