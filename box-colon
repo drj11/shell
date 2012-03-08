@@ -6,4 +6,7 @@ CODE
 a=b :
 /CODE
 
-But if you try it in bash, then it has no effect.
+But if you try it in 'bash', then it has no effect, unless POSIX
+mode (--posix) in in effect.  It has the specified effect in 'ksh'.
+Since 'bash' is popular, but no-one runs 'bash' in POSIX mode,
+consider non-portable.
