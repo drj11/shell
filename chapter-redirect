@@ -2,7 +2,7 @@ Redirection
 
 The usual place for the output of a command or pipeline is the terminal
 (tty).  A redirection is used when you want the output to go to a file,
-or one of a number of other slightly special places.
+or one of a number of other, slightly special, places.
 
 CODE
 cat chapter*.tex > book.tex
@@ -25,6 +25,11 @@ CODE
 : > newfile
 /CODE
 
+In some circumstances it may be undesirable to overwrite an existing
+file with a redirect.  If the *noclobber* option is set, then instead
+of overwriting an existing file, shell will complain:
+
+
 It turns out that it's legal to use no command at all with a
 redirection:
 
@@ -34,9 +39,8 @@ CODE
 
 
 
-
-I find that using 'dd' often makes me to redirect (or close) stderr.  'dd'
-output a summary to stderr in normal operation.  In
+I find that using 'dd' often makes me want to redirect (or close)
+stderr.  'dd' outputs a summary to stderr in normal operation.  In
 interactive use that can be quite useful; in shell
 programs it can get in the way.  Part of my 'rh' program gets 4 bytes
 from the random device:
@@ -56,7 +60,11 @@ fwK
 4 bytes (4 B) copied, 6.8606e-05 s, 58.3 kB/s
 /PRE
 
-In the published version of 'rh' stderr has been redirected to /dev/null:
+(If you try this at home, you will very likely get different
+random output, and different timings reported by 'dd').
+
+In the published version of 'rh' stderr has been redirected to
+/dev/null:
 
 CODE
 dd bs=4 count=1 < /dev/urandom 2> /dev/null | ... something
@@ -106,6 +114,6 @@ exec <&-
 exec >&-
 /CODE
 
-Exercise: Your friendly local Shell programming mentor has typed
-'exec >&-' at your prompt while you were making tea.  How do you recover
-without closing the window?
+Exercise: Your friendly local shell programming mentor has typed
+'exec >&-' at your prompt while you were making tea.  How do you
+recover without closing the window?
