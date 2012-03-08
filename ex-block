@@ -6,7 +6,7 @@ series of fixed sized records with each record having a sequential count
 should be okay.
 
 CODE
-{{ d['code-manylines-all.sh|idio|t'].def }}
+{{ d['code-manylines-all.sh|idio|t'].def | trim }}
 /CODE
 
 Each line is 8 bytes long and each line contains a 4 digit number.  We
@@ -15,7 +15,7 @@ output 10000 lines which is 80000 bytes.
 Now we use this in a pipeline:
 
 CODE
-{{ d['code-manylines-all.sh|idio|t'].run }}
+{{ d['code-manylines-all.sh|idio|t'].run | trim }}
 /CODE
 
 We already know that the first 'head' will consume some of the input
