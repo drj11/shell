@@ -28,7 +28,7 @@ but the second one will be complete (which is why we use 'head -2').
 On my Linux laptop this gives the output:
 
 PRE
-{{ d['code-manylines-pipe.sh|shint'] }}
+{{ d['code-manylines-all.sh|sh'] | trim }}
 /PRE
 
 Indicating the first 'head' consumed exactly 1024 lines, which is 8192
@@ -39,7 +39,7 @@ wrong answer; indeed it produces different answers when run more than
 once:
 
 PRE
-{{ d['code-manylines.sh|shtmp'].transcript }}
+{{ d['code-manylines-first.sh|shtmp'].transcript | trim }}
 /PRE
 
 Why is that? It's because the 'manylines' program produces output
@@ -53,14 +53,7 @@ Exercise: Why does 'dd' help?
 Exercise: Compare the above implementation of manylines with this one:
 
 CODE
-manylines () {
-  while : ; do echo ''; done |
-  head -9999 |
-  nl -ba |
-  while read a; do
-    printf "%07d\n" "$a"
-  done
-}
+{{ d['code-manylines-alt.sh'] | trim }}
 /CODE
 
 Which is better?

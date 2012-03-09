@@ -1,7 +1,7 @@
 {
-  "code-manylines.sh|shtmp" : {"inputs":["code-manylines-bad.sh"]},
-  "code-manylines-pipe.sh|shint" : {},
+  "code-manylines-first.sh|shtmp" : {"inputs":["code-manylines-bad.sh"]},
   "code-manylines-all.sh|idio|t" : {},
-  "code-manylines-pipe.sh" : {},
+  "code-manylines-all.sh|sh" : {},
+  "code-manylines-alt.sh" : {},
   "ex-block|jinja" : {"allinputs":true}
 }

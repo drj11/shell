@@ -11,4 +11,4 @@ manylines () {
   done | dd obs=10000
 }
 ### @export "run"
-manylines | { head -1 > /dev/null; head -2; }
+manylines 2>&- | { head -1 > /dev/null; head -2; }
