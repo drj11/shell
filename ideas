@@ -8,13 +8,6 @@ ends 'exec foo...', and explain why.
 Sparklines in shell: https://github.com/holman/spark
 echo *.py versus ls *.py
 
-Jonathan Dursi's notes: not bad:
-https://github.com/thehackerwithin/PyTrieste/wiki/Lesson1-TheUnixShell
-classically scripty.
-
-Awesome history and comparison:
-http://www.in-ulm.de/~mascheck/bourne/v7/
-
 Book Titles:
 
 Portable Shell for the Working Programmer
