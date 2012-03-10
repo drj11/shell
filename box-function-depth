@@ -1,0 +1,10 @@
+How Deep Can You Go?
+
+There is, of course, a limit to how much recurision is reasonable.  Or
+even sensible.  And since no-one really expected anyone to be using lots
+of nested function calls in shell, things are not as robust as a
+traditional programming language.
+
+CODE
+{{ d['code-x.sh'] | trim }}
+/CODE
