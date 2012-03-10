@@ -4,6 +4,9 @@
   "code-manylines-all.sh|sh" : {},
   "code-manylines-alt.sh" : {},
   "ex-block|jinja" : {"allinputs":true},
+  "code-pow.sh" : {},
   "code-x.sh" : {},
-  "box-function-depth|jinja" : {"allinputs":true}
+  "code-tr.sh|shint" : {},
+  "box-function-depth|jinja" : {"allinputs":true},
+  "chapter-redirect|jinja" : {"allinputs":true}
 }

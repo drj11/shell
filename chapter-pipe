@@ -22,7 +22,7 @@ deviations.  Bash is common enough to be important, but there are some
 ways in which it is not SUS compliant; I'll mention those as they come
 up.  Many Unix systems supply utilities that are not part of SUS, or
 they implement extra features that are not specified; where practical I
-avoid these, but when they implement features taht are not covered in
+avoid these, but when they implement features that are not covered in
 SUS then I'll use them, and note that they're not standard.
 @@ Move to sidebox? @@
 
