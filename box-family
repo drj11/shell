@@ -1,0 +1,50 @@
+Shell Family History
+
+The modern shell (the one which was standardised in 1997, haha) is
+descended in both spirit (that is, ideas and syntax) and source code
+from earlier Unix shells.  There are different shell implementations, some
+share the same or a similar syntax, others have a more different syntax
+but implement the same or similar functionalities.
+
+A major part of the family, the Bourne Shell-like shells, all share a
+core syntax that was first implementated in a shell written by Steven
+Bourne---hence, Bourne Shell.  Bourne Shell was shipped with Version 7
+Unix, and it was the standard '/bin/sh' for many Unix systems for a long
+while.  The other shells in this family are AT&T's Korn Shell ('ksh')
+(1983), the GNU project's Bourne Again Shell ('bash') (1989), Kenneth
+Almquist's Shell (1989), and pdksh.  Each of these has evolved, giving
+each one a unique lineage.  'ksh' was the basis for the POSIX standard
+shell; many of the features of 'ksh' were copied by 'bash'.  'pdksh'
+is, as its name implies, intended to be directly compatible with 'ksh'.
+Almquist's Shell was written to be compatible with the POSIX standard
+(which is simpler than Korn Shell), but made available freely, without
+requiring a license from AT&T.
+
+The Bourne Shell was written from scratch, but Unix had shells earlier
+than that.  The first Unix Shell was Thompson's Shell, which introduced
+many ideas that are central to shell today (such as redirection).
+Mashey's Shell was a modified version of Thompson's Shell that made it
+more suitable for programming (flow control and variables); it was used
+with Programmer's Workbench Unix.  Both of these shell's and their authors
+will have influenced Bourne in implementing Bourne Shell.
+
+Bill Joy wrote C Shell in XXXX, it shares a niche with other shells but
+has a markedly different syntax (being more in the spirit of C than
+Algol).  It supported job control and command line editing, both features
+which made interactive use more pleasant, and both features were
+implemented later in Korn Shell using a different syntax.  C Shell's
+history mechanism (using '!') was copied into 'bash'.  C Shell got
+extended (and improved?) to become 'tcsh', which is what most C Shell
+users use today.
+
+It is notable, in a slightly depressing way, how there are 3 independent
+rewrites ('bash', 'ash', 'pdksh') of the shell, motivated by licensing
+restrictions.
+
+Many of the fathers of Unix went on to create Plan 9, the standard shell
+for which was 'rc'.  In some ways cleaner, simpler, and with a syntax that
+is not at all compatible with Bourne Shell-like shells.  It is available
+on Unix (via various compatibility packages) but has never been popular.
+
+zsh
+
