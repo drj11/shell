@@ -1,11 +1,18 @@
-Commands and Pipelines
-Files and Redirections
+chapter-pipe            Commands and Pipelines
+    An introduction to simple commands and straightforward pipes.
+chapter-redirect        Files and Redirections
+    Reading from and write to files; redirecting from and to files.
 What the Shell sees; what the command sees
+    Quoting, globbing.
+Functions
 Loops and Testing
 Arguments, Options, Variables
 backquote
 Environment, Subshell, Process
-Pipelines II and Functions
+Pipelines II
+    An excursion into iteration, xargs, and pipes.
+Functional Programming
+    Limits to the function activation stack.
 Arithmetic Expansion
 Portability and POSIX
 Unix Kernel Exposed, Blocks, Redirections II

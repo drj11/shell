@@ -14,7 +14,7 @@ list () {
 
 Many Unix utilities have an implicit loop over their arguments, so we
 can do something for each item in the list.  In the examples that follow
-I use the command 'wc', but it could be anything.  'wc' iterate over
+I use the command 'wc', but it could be anything.  'wc' iterates over
 each of its arguments:
 
 CODE

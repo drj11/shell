@@ -24,6 +24,7 @@ Agile Shell Programming
 
 Things we might implement as a practical project for the book:
 
+bignums
 some sort of server, using netcat
 a thing like pexpect
 telnet server

@@ -3,5 +3,7 @@
   "code-manylines-all.sh|idio|t" : {},
   "code-manylines-all.sh|sh" : {},
   "code-manylines-alt.sh" : {},
-  "ex-block|jinja" : {"allinputs":true}
+  "ex-block|jinja" : {"allinputs":true},
+  "code-x.sh" : {},
+  "box-function-depth|jinja" : {"allinputs":true}
 }

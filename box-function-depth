@@ -1,10 +1,56 @@
 How Deep Can You Go?
 
-There is, of course, a limit to how much recurision is reasonable.  Or
+There is, of course, a limit to how much recursion is reasonable.  Or
 even sensible.  And since no-one really expected anyone to be using lots
 of nested function calls in shell, things are not as robust as a
 traditional programming language.
 
+Here is a function that outputs its second argument repeated the number of
+times of its first argument.
+
 CODE
 {{ d['code-x.sh'] | trim }}
+/CODE
+
+It's fine for small repetition counts, but for larger arguments, things go
+wrong:
+
+CODE
+x 10000 foo
+/CODE
+
+Too cute to not mention:  Of course it only requires log(N) storage to
+count to N:
+
+CODE
+x() { case $1 in
+    (0) return;;
+    (*[13579]) echo "$2";;
+  esac
+  x $(($1/2)) "$2" ; x $(($1/2)) "$2"
+}
+/CODE
+
+Recursion can be used to reduce an argument in an induction.  To count the
+number of strings, specified as the second argument, that are found in the
+first argument:
+
+CODE
+c() {
+  if [ "$1" == "${1%$2*}" ]
+  then
+    echo "$3"; return
+  fi
+  c "${1%$2*}" "$2" $(($3+1))
+}
+/CODE
+
+As lamented in
+http://drj11.wordpress.com/2012/03/05/taking-the-bash-out-of-mark/ shell
+does not have a portable arithmetic syntax for computing powers.  'awk'
+does (see Chapter XXX), but it is sometimes instructive to try and do
+these things in shell.
+
+CODE
+{{ d['code-pow.sh'] | trim }}
 /CODE
