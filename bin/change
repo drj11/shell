@@ -1,0 +1,30 @@
+_change () {
+    # $1 is the amount to be changed;
+    # $2 is the largest coin;
+    # $3 is a comma separated list of the remaining coins
+
+    if [ "$1" -eq 0 ]
+    then
+        echo
+        return
+    fi
+    if [ -z "$2" ]
+    then
+        return
+    fi
+    if [ "$1" -lt "$2" ]
+    then
+        _change $1 ${3%%,*} ${3#*,}
+        return
+    fi
+    _change $1 ${3%%,*} ${3#*,}
+    _change $(($1-$2)) $2 $3 |
+        while read a
+        do
+            echo $2 $a
+        done
+}
+
+change () {
+    _change $1 ${2%%,*} ${2#*,},
+}
