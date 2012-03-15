@@ -1,0 +1,16 @@
+The commands often feel more grown than designed.
+
+'set' is used to:
+  * assign the command line arguments ($1, $2, and so on).
+  * switch on or off the options.
+  * display the shell variables.
+
+'export' is used to:
+  * mark a variable as being for export.
+  * display the exported shell variables.
+  * set shell variables.
+
+'env' is used to:
+  * display the exported shell variables.
+  * run commands, using $PATH to find them.
+  * modify and clear the environment in which commands are run.
