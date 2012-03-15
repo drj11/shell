@@ -54,6 +54,7 @@ fold
 getopt
 head
 hexdump
+od
 join
 line
 man
