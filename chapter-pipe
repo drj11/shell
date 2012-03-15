@@ -2,19 +2,38 @@
 
 If you've been using Unix for a little while, you've probably come
 across the command line.  When you use the command line, you're
-interacting with a program called *the shell*, or sometimes just *shell*.
-*shell* is a programming language, and the commands you type at the
-command line are programs in *shell*.  Usually very simple ones.  Here
-is a program that writes a traditional greeting to the output:
+interacting with a program called *the shell*, or sometimes just
+*shell*.  *shell* is a programming language, and the commands you type
+at the command line are programs in *shell*.  Usually very simple ones.
+
+Here is a program that writes a traditional greeting to the output:
 
 CODE
 echo Hello, world!
 /CODE
 
+*Shell* is called shell because it is the outer layer of a
+system that can be thought of as having a nut-like structure.
+The core of the system is referred to as the *kernel* and
+has privileged access to system hardware and resources; it
+provides a controlled interface to the system hadware and
+mediates between programs.  *shell*, being outermost, is the
+component with which the user interacts; the analogy is somewhat
+anachronistic these days, most users will use a graphical user
+interface, although *shell* can still be considered outermost in
+the sense that the user can choose to operate the system using
+*shell* as the user interface.
+
+In other parts of computing, *shell* has a fairly generic
+meaning of user interface (usually a command line interface, but
+"graphical shell" is also used).  In the context of Unix *shell*
+almost always means the standard system command line shell and
+that is the sense in which I use it throughout this work.
+
 There is more than one *shell*, and they don't all implement the same
 programming language.  In this book I mostly refer to any shell that
 implements the Single Unix Specification Shell Command Language.  The
-GNU project's Bash shell ant AT&T's Korn shell both implement this
+GNU project's Bash shell and AT&T's Korn shell both implement this
 specification (more or less) and it's been pretty hard to find a version
 of Unix that doesn't ship either one of those shells or another equally
 good shell as /bin/sh since about the year 2000.  There are some minor
@@ -24,18 +43,21 @@ up.  Many Unix systems supply utilities that are not part of SUS, or
 they implement extra features that are not specified; where practical I
 avoid these, but when they implement features that are not covered in
 SUS then I'll use them, and note that they're not standard.
-@@ Move to sidebox? @@
+@@ shrink and move to sidebox? @@
 
-In the above example 'echo' is the name of a *command*, and the
-remainder of the line form the *arguments* to that command.  'echo' is a
-command that writes its arguments to its output.
+In the first little example above, 'echo' is the name of a *command*,
+and the remainder of the line form the *arguments* to that command.
+'echo' is a command that writes its arguments to its output.
 
 There is a default place that commands write output to, it is called
-*standard output*.  I shall call it *stdout* for short, and to emphasise
-that it has a technical meaning.
+*standard output*.  I shall call it *stdout* for short, and to
+emphasise that it has a technical meaning.
 
 Although 'echo' is a pretty simple command, it sees a lot of use in
-shell programs, as we'll see later.
+shell programs.  It's used for sending messages to the user's
+terminal, both routine and exceptional, for creating
+(usually small) files, and for generating strings to send to
+other programs.  All of these uses appear in this book.
 
 An even simpler command is ':', the null utility:
 
@@ -48,8 +70,8 @@ is surprisingly useful, and is well worth remembering.  It definitely
 features later.
 
 Programming is about combining simple parts to form large programs.
-Shell has several ways to combine parts, one of which was unique to
-shell for a long time: The pipe:
+Shell has several ways to combine parts, but the *pipe* provides
+shell programs with a lot of their character.
 
 CODE
 ls /usr/bin | head
@@ -65,7 +87,7 @@ the first 10 files in '/usr/bin' (which has way more than 10 files in it
 on my system, and probably yours).
 
 It's worth noting that all commands have a *stdin* even if they don't
-make use of it:
+make use of it.  For example, we can pointlessly pipe input into 'echo':
 
 CODE
 ls /usr/bin | echo ignored
@@ -76,3 +98,18 @@ command 'echo ignored' which ignores its input and writes out 'ignored'
 to *stdout*.  Following the great Unix tradition of not preventing you
 from doing something that is silly or stupid, it is not an error of any
 sort to send output to a command that ignores its input.
+
+Pipelines can have as many simple commands piped together as you
+like, the output from each command is piped into the next
+command in the pipeline.
+
+'tail' is a command similar to 'head', in that in copies lines
+from its *stdin* to its *stdout*, but it copies the last *n*
+lines, where *n* is the number that follows the '-n' argument:
+
+CODE
+ls /usr/bin | head | tail -n 2
+/CODE
+
+The above example, will list files 9 and 10 from the original
+list of /usr/bin (the last two lines of the first 10).
