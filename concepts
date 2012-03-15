@@ -1,29 +1,32 @@
-Concept                                                 Relevant Shell Command
+Concept                                         Relevant Shell Command
 
 command
 arguments
 options
 non-optional options
-conventions (contrast with dd)                          dd ps tar
+conventions (contrast with dd)                  dd ps tar
 shell variables
-environment                                             export env
+environment                                     export env
 shell functions
 words
 globbing
 glomming
 (variable) substitution
 ${foo}
-backtick aka command substitution                       xargs
+backtick aka command substitution               xargs
 IFS
-PATH                                                    command type which
-builtins                                                type command
+PATH                                            command type which
+builtins                                        type command
 "$@"
 $* (bad)
 $#
+${foo%.c} ${foo%%-*}
+${foo#?} ${foo##*/}
 assignment
 shift
 aliases (bad)
-pipes pipelines                                         time
+pipes pipelines                                 time
+filter                                          grep sed od sort uniq
 semicolon
 conjunctives (&& ||)
 control flow
@@ -31,18 +34,19 @@ if
 for
 while
 : true false
+break
 case
 set -e and so on
 set --
-stdin                                                   cat
-stdout                                                  tee
+stdin                                           cat
+stdout                                          tee
 stderr
 exec
 return code
 $?
 redirections
-file-system                                             cd
-current working directory                               pwd «env pwd»
+file-system                                     cd
+current working directory                       pwd «env pwd»
 /dev/null
 /dev/urandom
 /dev/zero
@@ -55,6 +59,6 @@ coprocess
 named pipes
 file descriptors
 /dev/fd
-signals                                                 kill trap
+signals                                         kill trap
 jobs
 background command «&»
