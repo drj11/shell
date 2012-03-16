@@ -1,9 +1,12 @@
 chapter-pipe            Commands and Pipelines
     An introduction to simple commands and straightforward pipes.
+    commands and arguments.
+    stdin, stdout
+    filter
 chapter-redirect        Files and Redirections
     Reading from and write to files; redirecting from and to files.
 What the Shell sees; what the command sees
-    Quoting, globbing.
+    Quoting, globbing, arguments, redirects
 Functions
 Loops and Testing
 Arguments, Options, Variables
@@ -12,6 +15,7 @@ Environment, Subshell, Process
 Pipelines II
     An excursion into iteration, xargs, and pipes.
 Functional Programming
+    Recursion.
     Limits to the function activation stack.
 Arithmetic Expansion
 Portability and POSIX
