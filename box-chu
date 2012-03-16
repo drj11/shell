@@ -8,7 +8,7 @@ directory in the current directory and in all the ancestors of
 the current directory, working up towards the root.
 
 CODE
-{{ d['code-chu.sh'] | trim }}
+{{ 'code-chu.sh' | content | trim }}
 /CODE
 
 Notice how the iterative call to '_chu' reduces the second
