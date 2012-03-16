@@ -21,6 +21,7 @@ builtins                                        type command
 $* (bad)
 $#
 ${foo%.c} ${foo%%-*}
+remove-suffix-pattern
 ${foo#?} ${foo##*/}
 assignment
 shift
@@ -57,7 +58,7 @@ sub-process
 sub-shell
 coprocess
 named pipes
-file descriptors
+file-descriptor
 /dev/fd
 signals                                         kill trap
 jobs
