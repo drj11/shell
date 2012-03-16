@@ -1,0 +1,19 @@
+Chopping strings.
+
+Shell's string editing facilities are not great, but they can be
+useful.  We can use TT ${parm%pattern} TT to repeatedly remove
+the end part of some string.  Here I've written a function,
+*chu*, that change's directory (like 'cd'), but searches for the
+directory in the current directory and in all the ancestors of
+the current directory, working up towards the root.
+
+CODE
+{{ d['code-chu.sh'] | trim }}
+/CODE
+
+Notice how the iterative call to '_chu' reduces the second
+argument by chopping off the final '/*' part.
+
+Aside: htmltopdf ${1%.html}.html ${1%html}.pdf
+This allows the first argument to be supplied either with, or
+without, the .html extension.
