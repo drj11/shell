@@ -1,6 +1,9 @@
 {
-  "code-manylines-first.sh|shtmp" : {"inputs":["code-manylines-bad.sh"]},
+  "code-manylines-first.sh|shtmp" :
+      {"inputs":["code-manylines-bad.sh"]},
   "code-manylines-all.sh|idio|t" : {},
+  "code-test-hash.sh|shint" : {},
+  "code-test-hash.sh|basher" : {},
   "code-manylines-all.sh|sh" : {},
   "code-manylines-alt.sh" : {},
   "ex-block|jinja" : {"allinputs":true},
@@ -8,5 +11,8 @@
   "code-x.sh" : {},
   "code-tr.sh|shint" : {},
   "box-function-depth|jinja" : {"allinputs":true},
-  "chapter-redirect|jinja" : {"allinputs":true}
+  "chapter-redirect|jinja" : {"allinputs":true},
+  "test-hash|jinja" : {"allinputs":true},
+  "code-chu.sh" : {},
+  "box-chu|jinja" : {"allinputs":true}
 }
