@@ -7,7 +7,7 @@ non-optional options
 conventions (contrast with dd)                  dd ps tar
 shell variables
 environment                                     export env
-shell functions
+functions                                       return
 words
 globbing
 glomming
