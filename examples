@@ -1,0 +1,9 @@
+Examples not yet integrated elsewhere.
+
+Find words containing 'p', 'n', and 'g' in that order, sorted longest
+first:
+
+grep 'p.*n.*g' /usr/share/dict/words | awk '{print length($0), $0}' |
+sort -nr
+
+Would be okay for pipelines chapter
