@@ -7,3 +7,4 @@ rj () {
 mkdir -p rendered
 
 rj box-chu
+rj chapter-redirect

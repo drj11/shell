@@ -23,6 +23,63 @@ def content(filename):
 
     return open(filename).read()
 
+def sh(filename):
+    """(A Jinja2 filter that) returns the output resulting from
+    running *filename* as a shell script."""
+    return shc(open(filename).read())
+
+def shc(inp):
+    """(A Jinja2 filter that) pipes the *inp* string into shell,
+    and returns the output."""
+
+    import os
+    # http://docs.python.org/library/select.html
+    import select
+    # http://docs.python.org/library/subprocess.html
+    import subprocess
+    import StringIO
+
+    def asiter():
+        return StringIO.StringIO(inp)
+
+    result = ''
+    inpiter = asiter()
+
+    child = subprocess.Popen(['bash', '--norc', '-i'],
+      env=dict(PS1='$ '),
+      stdin=subprocess.PIPE,
+      stdout=subprocess.PIPE,
+      stderr=subprocess.STDOUT)
+    # The algorithm for reading/writing the child is to loop
+    # using select.  If there is anything to read, read it; if
+    # we can write, write the next line; when we run out of stuff
+    # to write, close the pipe.  In routine operation, closing
+    # the pipe connected to child.stdin will cause the child to
+    # exit, the stdout pipe will become selectable.
+    writable = [child.stdin]
+    while True:
+        rs,ws,_ = select.select([child.stdout], writable, [])
+        if rs:
+            frag = os.read(rs[0].fileno(), 1000)
+            # If select() told us that we could read from the
+            # child, but we don't get anything, that's
+            # end-of-file.
+            if not frag:
+                break
+            result += frag
+        else:
+            try:
+                line = inpiter.next()
+            except StopIteration:
+                child.stdin.close()
+                writable = []
+                continue
+            ws[0].write(line)
+    return result
+
+def test():
+    print shc("pwd\n")
+
 def main(argv=None):
     if argv is None:
         argv = sys.argv
