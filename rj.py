@@ -25,10 +25,30 @@ def content(filename):
 
     return open(filename).read()
 
-def sh(filename):
-    """(A Jinja2 filter that) returns the output resulting from
-    running *filename* as a shell script."""
-    return shinp(open(filename))
+class Shell(object):
+    """A class of callable instances that implement a Jinja2
+    filter for piping scripts through a shell.  When calling,
+    pass the filename of the script to run.
+    """
+
+    def __init__(self):
+        self.opts = ['--norc']
+
+    def __call__(self, filename):
+        return shinp(open(filename), args=self.opts)
+
+    def opt(self, opt):
+        """Return an instance with *opt* added as a shell option.
+        """
+
+        # http://docs.python.org/release/2.6.7/library/copy.html#module-copy
+        import copy
+
+        res = copy.copy(self)
+        res.opts = self.opts + ['-'+opt]
+        return res
+
+sh = Shell()
 
 def shc(commands):
     """(A Jinja2 filter that) returns the output resulting from
@@ -38,14 +58,16 @@ def shc(commands):
 
     return shinp(StringIO.StringIO(commands))
 
-def shinp(inp):
+def shinp(inp, args=[]):
     """Pipes *inp*, which should be an iterable yielding strings,
-    into shell.  The output is returned as a single string."""
+    into shell (*args* are passed as arguments to the
+    shell---usually options).  The output is returned as a single
+    string."""
 
     # http://docs.python.org/library/subprocess.html
     import subprocess
 
-    child = subprocess.Popen(['bash', '--norc', '-i'],
+    child = subprocess.Popen(['bash'] + args,
       env=dict(PS1='$ '),
       stdin=subprocess.PIPE,
       stdout=subprocess.PIPE,
@@ -105,6 +127,7 @@ def main(argv=None):
         render(sys.stdout, f)
 
 contents = locals()
+contents['sh.i'] = sh.opt('i')
 
 if __name__ == '__main__':
     main()

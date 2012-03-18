@@ -44,7 +44,7 @@ itself.  'tr' is a common command that does not use this convention, so we
 have to use a redirection:
 
 CODE
-{{ 'code-tr.sh' | sh | trim }}
+{{ 'code-tr.sh' | sh.i | trim }}
 /CODE
 
 
