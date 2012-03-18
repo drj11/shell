@@ -2,6 +2,8 @@
 # rj.py
 # Render Jinja
 
+usage = """rj.py file ..."""
+
 import sys
 
 def render(out, filename):
@@ -26,30 +28,45 @@ def content(filename):
 def sh(filename):
     """(A Jinja2 filter that) returns the output resulting from
     running *filename* as a shell script."""
-    return shc(open(filename).read())
+    return shinp(open(filename))
 
-def shc(inp):
-    """(A Jinja2 filter that) pipes the *inp* string into shell,
-    and returns the output."""
+def shc(commands):
+    """(A Jinja2 filter that) returns the output resulting from
+    running the string *commands* as a shell command."""
 
-    import os
-    # http://docs.python.org/library/select.html
-    import select
-    # http://docs.python.org/library/subprocess.html
-    import subprocess
     import StringIO
 
-    def asiter():
-        return StringIO.StringIO(inp)
+    return shinp(StringIO.StringIO(commands))
 
-    result = ''
-    inpiter = asiter()
+def shinp(inp):
+    """Pipes *inp*, which should be an iterable yielding strings,
+    into shell.  The output is returned as a single string."""
+
+    # http://docs.python.org/library/subprocess.html
+    import subprocess
 
     child = subprocess.Popen(['bash', '--norc', '-i'],
       env=dict(PS1='$ '),
       stdin=subprocess.PIPE,
       stdout=subprocess.PIPE,
       stderr=subprocess.STDOUT)
+
+    return ''.join(pipe_to_child(child, inp))
+
+def pipe_to_child(child, input):
+    """Send *input* to the *child* stdin, and retrieve any
+    output that *child* writes on stdout.  Each fragment of
+    output if yielded.  *input* should be an iterable of lines.
+
+    Because no attempt is made to read stderr (or any other file
+    descriptor the child may be writing to), this works best if
+    stderr is closed or redirected to stdout.
+    """
+
+    import os
+    # http://docs.python.org/library/select.html
+    import select
+
     # The algorithm for reading/writing the child is to loop
     # using select.  If there is anything to read, read it; if
     # we can write, write the next line; when we run out of stuff
@@ -66,19 +83,20 @@ def shc(inp):
             # end-of-file.
             if not frag:
                 break
-            result += frag
+            yield frag
         else:
             try:
-                line = inpiter.next()
+                line = input.next()
             except StopIteration:
                 child.stdin.close()
                 writable = []
                 continue
             ws[0].write(line)
-    return result
 
-def test():
-    print shc("pwd\n")
+def test_pwd():
+    import os
+
+    assert os.getcwd() in shc("pwd\n")
 
 def main(argv=None):
     if argv is None:
