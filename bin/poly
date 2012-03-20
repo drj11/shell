@@ -1,5 +1,0 @@
-#!/bin/sh
-# /home/drj/shell/bin/poly
-# Generic prefix command
-
-PATH="$(which poly).m":"$PATH" "$@"

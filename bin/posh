@@ -1,5 +1,0 @@
-#!/bin/sh
-# /home/drj/shell/bin/posh
-# Generic prefix command
-
-PATH="$(which posh).m":"$PATH" "$@"
