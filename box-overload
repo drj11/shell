@@ -14,3 +14,8 @@ The commands often feel more grown than designed.
   * display the exported shell variables.
   * run commands, using $PATH to find them.
   * modify and clear the environment in which commands are run.
+
+'exec' is used to:
+  * terminate shell and run another program.
+  * redirect shell's input and output.
+  * duplicate file descriptors.
