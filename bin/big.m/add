@@ -1,0 +1,52 @@
+#!/bin/sh
+# add
+# Add two bigna
+
+if [ ${#1} -le 3 ] && [ ${#2} -le 3 ] ; then
+    echo $(( $1 + $2 ))
+    return
+fi
+
+ltrim () {
+    # Output $1 with any occurrences of $2 removed from the
+    # left.
+    case $1 in
+      ($2*) ltrim "${1#$2}" "$2";return;;
+      (*) echo "$1";;
+    esac
+}
+
+split () {
+    # split $1 into its higher-order digits and its least
+    # significant 3 digits.  Two blocks of digits are always
+    # printed, separated by a space (the first block is '0' if
+    # the number is < 1000).  The second block may be 1 to 3
+    # digits long.
+    case ${#1} in
+        (0) return 99;;
+        ([123]) echo 0 $1;return;;
+        (*) # left-hand digits of $1, all but last 3.
+            l1=${1%???}
+            # right-hand 2 digits of $1
+            r1=${1#$l1}
+            echo $l1 $(ltrim $r1 0);return;;
+    esac
+}
+
+_add () {
+    # $1 $2 left and right parts of augend.
+    # $3 $4 left and right parts of addend.
+    # $5 is the carry (also added)
+    # $6 is the accumulated result (accumulated least
+    # significant first).
+    x=$(($5 + $2 + $4))
+    if [ $1 -eq 0 ] && [ $3 -eq 0 ] ; then
+        echo $x$6
+        return
+    fi
+    _add $(split $1) $(split $3) $(split $x)$6
+}
+
+
+_add $(split $1) $(split $2) 0 ''
+
