@@ -21,10 +21,12 @@ Agile Shell Programming
 
 Things we might implement as a practical project for the book:
 
+railroad syntax diagrams in shell
 bignums
 some sort of server, using netcat
 a thing like pexpect
 telnet server
+logging module so that shell programs can log
 log file parser
 twitter client
 shell package manager: shark, shrimp
