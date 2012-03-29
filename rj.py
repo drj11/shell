@@ -8,7 +8,7 @@ import sys
 
 def render(out, filename):
     """Render to the stream *out* the file *filename* (treating
-    it as a jinja2 template.  An additonal final newline is
+    it as a jinja2 template).  An additonal final newline is
     written (to compensate for the fact that jinja2 removes
     one)."""
     import jinja2
