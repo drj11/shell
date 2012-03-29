@@ -1,77 +1,75 @@
 The contents of my "moral bin" directory:
 
-bash
-cat
-chmod
-chown
-cp
-date
-dd
-df
-echo
-false
-grep
-kill
-ln
-login
-ls
-mkdir
-mknod
-more
-mv
-netcat
-ps
-pwd
-rm
-rmdir
-sed
-sh
-sleep
-stty
-su
-touch
-true
-uncompress
-which
-zcat
-[
-awk
-basename
-bc
-cmp
-comm
-curl
-cut
-diff
-dirname
-env
-expand
-expr
-file
-find
-fmt
-fold
-getopt
-head
-hexdump
-od
-join
-line
-man
-nl
-pr
-printf
-sort
-stat
-sudo
-tac
-tail
-tee
-test
-time
-touch
-tr
-uniq
-which
-xargs
-yes
+bash            runs commands
+cat             concatenates files
+chmod           changes permissions
+chown           changes owner
+cp              copies files
+date            get and set date
+dd              copies files / file descriptor hacks
+df              reports free disk space
+echo            outputs text
+false           does nothing
+grep            scans file for matching lines
+kill            sends signal to process
+ln              creates file links
+login           log in user with shell
+ls              lists files
+mkdir           make directories
+mknod           make special devices
+more            views file in paginator
+mv              moves / renames file
+netcat          internet client / server
+ps              lists processes
+pwd             prints working directory
+rm              removes files
+rmdir           removes directories
+sed             modifies streams
+sh              runs commands
+sleep           waits for time to pass
+stty            get and set tty options
+su              switch user
+touch           create file / update timestamp
+true            does nothing
+uncompress      reverse action of compress
+which           finds binaries on path
+zcat            compresses stream
+[               evaluate conditional
+awk             swiss army knife
+basename        chops pathname
+bc              extended precision calculator
+cmp             compare files
+comm            scans files for lines in common
+curl            fetch files from internet
+cut             remove columns
+diff            display visual differences
+dirname         chops pathname
+env             run commands / edit environment / show environment
+expand          remove tabs
+expr            evaluate arithemetic expression
+file            scan contents and infer filetype
+find            traverse directories and scan listings
+fmt             reflow paragraph
+fold            reflow lines
+getopt          command line option processing
+head            show only first part
+hexdump         show file contents as hex
+od              same as od
+join            merge files sharing a field
+line            reads one line, and nothing more
+man             display pages from manual
+nl              number lines
+pr              paginate text for printing
+printf          outputs arguments
+sort            sorts file
+stat            display file metadata
+sudo            run command as root
+tac             reverse each line
+tail            show only last part
+tee             duplicate stream, and divert to file
+test            same as [
+time            report running time of command
+tr              simple character replacement in stream
+uniq            ensure output lines are unique
+xargs           run command with arguments taken from input
+yes             repeatedly output arguments
