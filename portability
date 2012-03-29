@@ -5,6 +5,8 @@ select
 
 In bash but not POSIX
 source
+(although alias source=. seems to be an entirely adequate
+replacement, and works in bash where it is not required)
 
 bash requires that the body of a function definition has braces around
 it.  This is good programming style, but is not actually required by
@@ -12,5 +14,8 @@ POSIX.
 
 SUS requires that the shell run as a script a file found on the PATH
 that is not executable.  bash does not do this.  I was actually quite
-surprised to find this in the spec.
+surprised to find this in the spec.  Triple check this.
+
+The last command of a pipeline may or may not be executed in a
+subshell (bash executes it in a subshell, ksh does not).
 
