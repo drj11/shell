@@ -35,7 +35,7 @@ Prompt () {
 
 # number of lines output since prompt
 l=0
-while unset a; read a
+while unset a; read -r a
 do
     # We prompt before printf so that we don't print an extra
     # prompt when the file is an exact multiple of the page size.
