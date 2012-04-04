@@ -1,0 +1,24 @@
+#!/bin/sh
+
+Cat () {
+    while unset a ; read a
+    do
+        printf '%s\n' "$a"
+    done
+    # Cope with possible last line without newline
+    if test -n "$a"
+    then
+        printf '%s' "$a"
+    fi
+}
+  
+if [ "$#" -eq 0 ]
+then
+    Cat
+    exit
+fi
+
+for f
+do
+    Cat < "$f"
+done
