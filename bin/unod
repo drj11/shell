@@ -1,0 +1,22 @@
+#!/bin/bash
+# unod
+# Has to be a bash script because printf is buggy in ash/dash.
+# Reverse 'od', producing a binary file from text input.
+
+while read -r a
+do
+    set -- $a
+    if [ ${#1} -gt 3 ]
+    then
+        # Assume first word is an address; which we ignore.
+        shift
+    fi
+    for w
+    do
+        case ${#w} in
+            2) printf '\x'"$w";;
+            3) printf '\'"$w";;
+            *) echo 'unknown word' 1>&2;;
+        esac
+    done
+done
