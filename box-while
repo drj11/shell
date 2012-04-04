@@ -1,13 +1,13 @@
 When while loops finish
 
-While it is convention to think of the termination test for the shell
+While it is conventional to think of the termination test for the shell
 while loop to be at the beginning, the shell grammar is flexible enough
 to effectively place the test anywhere.  The usual description of the
 while syntax is:
 
 while *command* do *command-list* done
 
-In fact the *command* that is used for the test cna be a *command-list*,
+In fact the *command* that is used for the test can be a *command-list*,
 and can be just as complex as the body of the while loop is.  So if you
 miss the "do ... while" construct from other languages, such as C, you
 can emulate one with:
@@ -28,7 +28,7 @@ with a surprisingly awkward empty command.
 You may have already guessed that there's no particularly reason to
 place the test at the end of the loop.  If you want the test to be
 somewhere in the middle then that's possible; just place some commands
-before the test, and some after the test after a do.  The second list,
+before the test, and some after the test after a 'do'.  The second list,
 between 'do' and 'done' can't be empty, but a slight abuse of the ':'
 command suggests this layout:
 
@@ -42,9 +42,29 @@ done
 
 Used in this way, shell's while loop is reminiscent of Forth's
 'BEGIN ... WHILE ... REPEAT' loop, where the test can be placed anywhere
-in the looping body.
+inside the looping body.
 
-Warning: This is definitely esoterica, and if you use this knowledge in
-the shell programs you write, then you're likely to make them harder for
-your companion programmers to understand.
+Of course the same applies to 'until', which is just a 'while'
+command with an inverted condition test.
 
+Warning: While this is all fairly clearly documented in the spec,
+in the manual pages, and is mentioned in the seminal BLTJ paper
+XXX, this knowledge remains buried.  Practising shell
+programmers will likely not know the technique and those that do
+will consider it esoterica.  If you use this knowledge in the shell
+programs you write, then you're likely to make them harder for your
+companion programmers to understand (and yourself, a few months
+on).
+
+Obscurantists will delight in combining this feature with
+'alias'.
+
+CODE
+alias assuredly='do :'
+until
+  printf "what is the magic word? "
+  read -r response
+test response = 'please' ; assuredly
+  printf "That's not right.  Guess again.\n"
+done
+/CODE
