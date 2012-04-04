@@ -1,0 +1,50 @@
+#!/bin/sh
+# page
+# Display file in pages
+
+sttysave=$(stty --save <&2)
+
+atexit () {
+    stty "$sttysave" <&2
+}
+
+trap atexit EXIT INT QUIT TERM
+
+stty -icanon min 1 -echo -echonl <&2
+
+inkey () {
+    dd 2>&- bs=1 count=1
+}
+
+Clear () {
+    # Clear the current line by CR Space CR
+    printf '\r \r'
+}
+
+Prompt () {
+    printf '%s' ":$1"
+    case $(inkey <&2) in
+        ' ') Clear; return;;
+        'q') exit;;
+    esac
+}
+
+# number of lines output since prompt
+l=0
+while unset a; read a
+do
+    # We prompt before printf so that we don't print an extra
+    # prompt when the file is an exact multiple of the page size.
+    if [ $l -eq 24 ]
+    then
+        Prompt
+        l=0
+    fi
+    printf '%s\n' "$a"
+    l=$((l+1))
+done
+if test -n "$a"
+then
+    printf '%s\n' "$a"
+fi
+Prompt eof
