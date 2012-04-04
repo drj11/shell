@@ -3,6 +3,10 @@
 # Display file in pages
 
 sttysave=$(stty --save <&2)
+# 'stty rows' is not portable (not in POSIX)
+rows=$(stty size <&2)
+rows=${rows% *}
+pagelen=$(($rows - 1))
 
 atexit () {
     stty "$sttysave" <&2
@@ -35,7 +39,7 @@ while unset a; read a
 do
     # We prompt before printf so that we don't print an extra
     # prompt when the file is an exact multiple of the page size.
-    if [ $l -eq 24 ]
+    if [ $l -eq "$pagelen" ]
     then
         Prompt
         l=0
