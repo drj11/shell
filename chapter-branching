@@ -1,0 +1,476 @@
+Branching and Testing
+
+Any interesting program or compuational process will have a way
+of selecting one of a number of different potential actions.
+The <em>if statement</em> has become popular for this and is
+enshrined in many programming languages.  Shell is no exception.
+
+CODE
+if condition; then when-true; else when-false; fi
+CODE
+
+The else part is optional.  'elif' branches are allowed.  Note that
+'if' and 'fi' effectively form brackets and mean that there is no
+"dangling else" problem that C and other languages have (see XXX of
+Dragon).  Using 'fi', which is 'if' spelt backwards, to terminate the
+'if' statement is probably borrowed from ALGOL.  In contrast, 'for' and
+'while' statements use 'do ... done'; maybe borrowing from ALGOL again
+would have been too od.
+
+*condition* is a command that the shell runs.  The *exit status*
+of the command is used by 'if' to switch to either the
+*when-true* part, or the *when-false* part.  On a POSIX system
+the exit status is a number between 0 and 255.  By convention an
+exit status of 0 is used to indicate success, and *true* when
+used in an 'if' statement; a non-zero exit status indicates some
+sort of failure, and *false* when used in an 'if' statement.
+
+The utilities 'true' and 'false' run and have an exit status of
+0 and XXX 1 respectively.  So when used in an 'if' statement
+they have the conventional meanings:
+
+CODE
+if true
+then
+    echo T
+else
+    echo not reached
+fi
+if false
+then
+    echo not reached
+else
+    echo F
+fi
+/CODE
+
+Note that the exit status of a command is completely separate
+from any output that the command may produce, and 'if' only
+cares about the exit status.  Most ordinary utilities will have
+an exit status of 0 when succesful and non-zero otherwise (be
+careful though, due to historical practice and buggy
+implementations, it may not always be reliable).
+
+The ':' utility (seen in XXX) has an exit status of 0.  So it
+behaves like 'true':
+
+CODE
+if : ; then echo T ; fi
+/CODE
+
+section boolean variables
+
+Consider this code:
+
+CODE
+if $debug; then echo "we are about to do something"; fi
+/CODE
+
+The condition command is the result of expanding the variable
+'$debug'.  Setting 'debug=true' before running this code will
+result in the debug message being output; setting 'debug=false'
+will result in the debug message being suppressed.  This then
+becomes a useful convention, to assign a variable either the
+value 'true' or the value 'false' and then use it directly in an
+'if' statement.
+
+Not all shell programmers know or use this convention, but it is
+reasonably clear.  There may be some issue if the variable,
+'debug' in the example above, comes from user input.  Silly or
+malicious users could arrange 'debug' to have a value of
+'rm -fr *;false'.  Parameter expansion can help:
+
+CODE
+debug=${debug:+true}
+debug=${debug:-false}
+/CODE
+
+Now 'debug' will be set to 'true', if it was originally set to a
+non-empty string, or 'false', if it was originally unset or set
+to an empty string.
+
+It is permitted, but usually not very useful, for the condition to
+generate output:
+
+CODE
+if echo 1 ; then echo T ; fi
+/CODE
+
+Note that this outputs "1" when running the condition, and "T"
+when running the when-true branch of the 'if'.  The output of
+'echo' is ignored for the condition, it is the exit status that
+is used (which for 'echo' is 0 when there are no errors,
+following the usual convention).
+
+Often a command that you might normally use for its useful
+output also has a useful exit status.  If I want to check if
+'mysql' is already a user in '/etc/passwd' then I would do this
+with 'grep mysql /etc/passwd' and see that I either get some
+output or no output.  In a program I can use the exit status of
+'grep', which is 0 when a match is found, and 1 when no match is
+found:
+
+CODE
+if grep '^mysql:' /etc/passwd
+then
+    echo already got mysql
+fi
+/CODE
+
+This program clumsily includes the output from 'grep' in its
+output.  A redirection suppresses this:
+
+CODE
+if grep '^mysql:' /etc/passwd > /dev/null
+then
+    echo already got mysql
+fi
+/CODE
+
+(I used to write this by *closing* stdout, 'grep foo file >&-',
+which used to be just fine, but the rise of utilities that check
+they can successfully write to stdout and whinge if they can't
+has eliminated that.)
+
+
+
+The condition command can be a pipeline:
+
+CODE
+if ps | grep mysqld
+then
+    echo you are running mysqld
+fi
+/CODE
+
+
+The '!' keyword can be useful to negate the sense of the test:
+
+CODE
+if ! condition; then ...; else ...; fi
+CODE
+
+There are a few things worth noting about the '!' keyword: it is
+a keyword not a metacharacter, so must normally have spaces
+around it; it is not special to 'if', it can be used anywhere to
+negate the sense of a command's exit status; some programmers
+who have to use ancient shells, or Solaris, do not use it
+because it is not supported on all shells (it is supported in
+all shells that are even vaguely POSIX compliant).
+
+Shell also has <em>control operators</em> '&&' and '||',
+borrowed from C.  '&&' is <em>and</em>; '||' is <em>or</em>.
+These are useful when you want to test a combined condition, 'A
+&& B' or 'A || B'; and also sometimes for an idiomatic brief
+form of 'if' itself.
+
+The list
+
+CODE
+command-l && command-r
+/CODE
+
+executes 'command-l' and only executes 'command-r' if the
+exit status of 'command-l' was 0 (true).
+
+In contrast the list
+
+CODE
+command-l || command-r
+/CODE
+
+executes 'command-l' and only executes 'command-r' if the exit
+status of 'command-l' was non-zero (false).
+
+Thus '&&' and '||' implement <em>short-circuit</em> boolean
+operators.  <em>short-circuit</em> because 'command-r' is only
+executed if needed to evaluate the 'and' or 'or' combination.
+
+These can be used instead of 'if' to conditionally run
+commands.
+
+CODE
+cd /home/drj && echo home
+/CODE
+
+CODE
+hg --version > /dev/null || { echo "hg not found"; exit 2; }
+/CODE
+
+Generally I prefer the clarity of 'if', but using '&&' or '||'
+can be shorter than 'if' and can sometimes be clearer in simple
+cases.  Exercise your judgement when authoring, and when reading
+other people's programs, recognise that this is a matter of
+style.
+
+The latter example illustrates a common pattern, where the right-hand
+of an '||' bails out of the program entirely.  It is also common to see
+"print something out and exit" combined into a function,
+idiomatically called 'die':
+
+CODE
+die () {
+    echo >&2 "$@"
+    exit 2
+}
+check-something || die problem with something
+/CODE
+
+This is cute, but overuse will give your programs a PERL-like quality.
+If you do find that every command has '|| die ...' added,
+consider using 'set -o errexit' which will cause the shell to
+exit when any command has a non-zero exit status (see XXX for
+more details).
+
+Unlike C the '&&' and '||' operators do not have any sort of
+precedence over each over.  An entire list of commands combined
+with '&&' and '||' is executed from left to right.
+a true command is followed by '||' or a false command is
+followed by '&&'.  'A || B && C' is equivalent (in
+terms of what gets executed) to '(A || B) && C'.  If you have a
+long chain of '||' and '&&' then you can think of '||' as
+meaning "skip next if true" and '&&' as meaning "skip next if
+false".
+
+section 'test'
+
+The <em>condition</em> in an 'if' statement is just an ordinary command.
+Of course, there are some commands that are more useful than
+others to use as a condition.  The classic is 'test'.
+
+'test' is a utility (built-in to many shell implementations as
+it happens) with syntax for testing and comparing strings,
+comparing numbers, and inspecting the file system.  All bundled
+into one utility that defies the usual Unix conventions for
+command arguments, predates the dawn of time, and has enough
+historical baggage for a lifetime of family holidays.  Even
+after POSIX came along with the purifying waters of
+standardisation, we still see scars.
+
+The simplest case is one argument:
+
+CODE
+test arg
+/CODE
+
+in which case 'test' tests whether <em>arg</em> is an empty
+string (exit status 1, false), or not (exit status 0, true). FN
+
+This is the same as using the '-n' operator ('n' for non-zero
+length presumably):
+
+CODE
+test -n arg
+/CODE
+
+Usually I find the '-n' operator is a
+little bit clearer, but some authors will habitually use the one
+argument form.
+
+The '-z' operator is the opposite of '-n'.  True when the
+argument is an empty string, false otherwise ('z' for zero
+length string).
+
+CODE
+test -z arg
+/CODE
+
+Strings can be tested to be equal, with '=', or not equal, '!='.
+
+CODE
+test string1 = string2
+test string1 != string2
+/CODE
+
+Using '==' to test for string equality is common but not
+portable.  Try and avoid it.
+
+When using 'test' with parameter expansion, it is essential to
+use double quotes to stop the variable being split into multiple
+arguments:
+
+CODE
+test "$MAIL"
+/CODE
+
+This tests whether MAIL is set (to a non-empty value), and still
+works when some mischievous person has set MAIL to 'foo = bar'.
+
+In 'test "$var"' what if 'var' has been set to '-z', or if in
+'test "$var" = thing' what if 'var' has been set to '-z'? Can
+'test' get confused?  The short answer is "no... if everyone has
+been reading the POSIX spec".  Historically 'test' got it wrong,
+meaning that the '-n' option was strongly preferred over the
+one-argument form, but most importantly that the recommended way
+to compare strings was to make them safe by putting an 'X' in
+front:
+
+CODE
+test "X$foo" = Xtarget
+/CODE
+
+Expect to see this in older code, or in new code written by
+old-timers; old habits die hard.
+
+'=' and '!=' only work for strings, although a lot of the time
+one can press them in for service for numbers too, as long as
+one is aware that extra '0's on the left will cause unexpected
+results: 'test 007 = 7' is false because a string comparison is
+used.  Better to use the operators that test for numeric
+equality:
+
+'-eq' tests for equality of numbers (integers, really), and '-ne'
+for inequality.  Even when '=' and '!=' will do, if you are
+using numbers it is better to use these operators to declare to
+your readers that you are expecting numbers.  Who knows, you may
+even get some useful error if the program unexpectedly has
+non-numbers:
+
+CODE
+test 007 -eq 7 && echo T
+test 001 -ne 1 || echo F
+/CODE
+
+For comparing numbers we also have:
+
+CODE
+test "$n1" -gt "$n2" # Greater than
+test "$n1" -ge "$n2" # Greater than or equal to
+test "$n1" -lt "$n2" # Less than
+test "$n1" -le "$n2" # Less than or equal to
+/CODE
+
+The two letter names are of course inspired by FORTRAN.
+
+For comparing strings we can use 'test s1 \< s2'.  Actually, no.
+This is not in the POSIX spec, but is implemented by the
+built-in versions of test in bash and ksh and the normally
+conservative ash.  Many programmers, me included before I had to
+look it up for this book, will use this without realising it is
+not portable.
+
+So, to compare strings we can use:
+
+CODE
+printf "%s\n" "$a" "$b" | sort -c
+/CODE
+
+(as long as '$a' and '$b' do not contain a newline).  At least, this
+*should* work, but when I tried it, 'sort' spewed out stuff on stderr
+(which is, in the sense of complying to the spec, a bug).  Of
+course we can suppress the stderr of 'sort' like this:
+
+CODE
+printf "%s\n" "$a" "$b" | sort -c 2>&-
+/CODE
+
+But this is hardly the stuff of elegance and style.
+
+So, to compare strings we can use:
+
+CODE
+expr "$a" \< "$b" > /dev/null
+/CODE
+
+This does seem to work.  More on 'expr' in a bit.
+
+section 'test' and files.
+
+The 'test' utility has loads of operators to test for files, test
+they are readable, writable, and so on.  It's a real alphabet
+soup:
+
+CODE
+test -b block-special
+test -c character-special
+test -d directory
+test -e exists
+test -f regular-file
+test -g setgid
+test -p FIFO
+test -r readable
+test -s non-empty-file
+test -u setuid
+test -w writable
+test -x executable
+/CODE
+
+Most shell programmers do not try and keep these in their head
+(except for '-d' '-e' '-f' and maybe '-r' '-w').  Refer to the
+manual, or, now, this book.
+
+The '-w' and '-x' operators merely check the writable and
+excutable bits.  A file that is "writable" may be mounted on a
+read-only filesystem; it not really writable, but 'test' does
+not know this.  Some systems support no-execute filesystems so
+similar warnings apply to 'executable'.
+
+There is one last operator that operates on numbered file
+descriptors and not a file: 'test -t fildes' tests if *fildes*
+is open and associated with a terminal.
+
+section 'expr'
+
+The utility 'expr' is really for evaluating expressions.  It
+usually produces output which has to be suppressed (with the
+redirection '> /dev/null') when used as a condition.  But
+because it has a wide range of different expressions, and
+because its exit status is useful, it's often seen used as a
+condition.
+
+I briefly showed 'expr "$a" \< "$b"' for comparing strings.  Of
+course we also have '<=' '>' '>=' '=' and '!='.  Note that
+because '<' and '>' are shell metacharacters they generally need
+quoting when passing them as argument to 'expr'.
+
+CODE
+expr "$a" \< "$b"
+/CODE
+
+This will compare '$a' and '$b' lexicographically unless they
+both look like numbers, in which case they will be compared
+numerically.  'expr 10 \< 2' is false.  If the arguments might
+look like numbers and this isn't wanted, then you should call
+'expr' like this:
+
+CODE
+expr "X$a" \< "X$b"
+/CODE
+
+which now looks like the workaround that we all used to use for
+'test'.
+
+Don't forget to suppress the output of 'expr' when using it as a
+condition.
+
+CODE
+if expr "$x" \> F > /dev/null || expr "$x" \< A > /dev/null
+then
+    echo invalid choice 1>&2
+    exit 1
+fi
+
+Personally, I don't find myself using 'expr' to compare the
+ordering of strings very much, but I mention it here as the
+portable way I've found of doing that in shell, if you have to.
+
+
+FN
+Actually the simplest case is no arguments, just 'test'.  In
+this case 'test' returns false (exit status 0).  I had to look
+that up in the spec, and I've never seen it used in anger.  I would be
+surprised if shell programmers knew it.
+/FN
+
+
+Exercise: Should it be an error for 'grep' to not be able to write
+to stdout (in 'grep foo /etc/passwd >&-')?  'grep' has a useful exit
+status aside from its output, so it could be argued that being unable
+to write to stdout is not an error.  What about a program like 'ls'
+which is generally only used for its output?
+
+Exercise: Why is this useful: 'if ls *.c > /dev/null; then ... fi'?
+
+Exercise f3a364d3: Can you implement the functionality of '!' as
+a command?  Write a command, 'not' say, such that 'not command args
+...' runs the command, but inverts the exit status.
