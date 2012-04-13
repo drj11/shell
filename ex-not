@@ -1,0 +1,30 @@
+Solution to exercise f3a364d3.
+
+You can implement 'not', but it will not have quite the same
+functionality of '!'.  '! false | true' is false (non-zero
+exit status) because '!' acts on the whole pipeline, and it's
+the last command in a pipeline that determines the exit status.
+'not false | true' only negates 'false'.  The command 'not
+false' is piped into the command 'true'.  The exit status of the
+whole pipeline is 'true'.
+
+Redirections are another problem.  A redirection from a file
+that does not exist will fail: 'grep foo < /etc/notnotnot'. '!'
+acts on the whole command, including redirections, so '! grep
+foo < /etc/notnotnot' will be true (you may also see some
+whining from your shell about the redirection if you try this).
+If 'not' is a command, then it can't know about the
+redirections, because they are performed by the shell before the
+command is run.  'not grep foo < /etc/notnotnot' is still a
+command with a bad redirection so will be false.
+
+That aside, we can make a reasonable attempt at not:
+
+CODE
+if "$@"
+then
+    exit 1
+else
+    exit 0
+fi
+/CODE
