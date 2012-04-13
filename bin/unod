@@ -1,6 +1,7 @@
-#!/bin/bash
+#
 # unod
-# Has to be a bash script because printf is buggy in ash/dash.
+# Is better as a bash script because then the printf \x escapes
+# work (which is a non-POSIX extension in bash).
 # Reverse 'od', producing a binary file from text input.
 
 while read -r a
