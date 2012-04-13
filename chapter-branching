@@ -12,7 +12,7 @@ CODE
 The else part is optional.  'elif' branches are allowed.  Note that
 'if' and 'fi' effectively form brackets and mean that there is no
 "dangling else" problem that C and other languages have (see XXX of
-Dragon).  Using 'fi', which is 'if' spelt backwards, to terminate the
+[DRAGON]).  Using 'fi', which is 'if' spelt backwards, to terminate the
 'if' statement is probably borrowed from ALGOL.  In contrast, 'for' and
 'while' statements use 'do ... done'; maybe borrowing from ALGOL again
 would have been too od.
@@ -25,8 +25,10 @@ exit status of 0 is used to indicate success, and *true* when
 used in an 'if' statement; a non-zero exit status indicates some
 sort of failure, and *false* when used in an 'if' statement.
 
-The utilities 'true' and 'false' run and have an exit status of
-0 and XXX 1 respectively.  So when used in an 'if' statement
+The utilities 'true' and 'false' have an exit status of
+0 and something non-zero respectively (the spec guarantees that
+'false' will have non-zero exit status, but doesn't guarantee
+any particular value).  So when used in an 'if' statement
 they have the conventional meanings:
 
 CODE
@@ -44,7 +46,7 @@ else
 fi
 /CODE
 
-Note that the exit status of a command is completely separate
+The exit status of a command is completely separate
 from any output that the command may produce, and 'if' only
 cares about the exit status.  Most ordinary utilities will have
 an exit status of 0 when succesful and non-zero otherwise (be
@@ -99,7 +101,7 @@ if echo 1 ; then echo T ; fi
 Note that this outputs "1" when running the condition, and "T"
 when running the when-true branch of the 'if'.  The output of
 'echo' is ignored for the condition, it is the exit status that
-is used (which for 'echo' is 0 when there are no errors,
+is used (which for 'echo' is 0, hence true, when there are no errors,
 following the usual convention).
 
 Often a command that you might normally use for its useful
@@ -133,6 +135,7 @@ they can successfully write to stdout and whinge if they can't
 has eliminated that.)
 
 
+section pipelines
 
 The condition command can be a pipeline:
 
@@ -409,9 +412,73 @@ There is one last operator that operates on numbered file
 descriptors and not a file: 'test -t fildes' tests if *fildes*
 is open and associated with a terminal.
 
+section test and [
+
+An alternative spelling for 'test' is '[', and when invoked as '[' a
+final argument of ']' is required (but ignored).  It means that you can
+give the condition a brackety feel.  'if test $# -gt 0' becomes
+'if [ $# -gt 0 ]'. I don't know who came up with this, but I bet they
+thought it was cute.  The '[ ... ]' is not special syntax, just
+a utility named '[', though of course this utility is built in
+to most modern shells.  The one-liner
+'(IFS=:; printf 'ls %s/[' $(getconf PATH) | sh 2>&-)'
+should reveal the location in the filesystem of the utility '[' (I'm
+sure this used to be a hardlink to 'test' but on my Ubuntu system
+they're separate programs).
+
+Partly because of the problems with 'test' and the fact that on
+different systems 'test' might behave differently, the ksh shell
+has '[[' which is special syntax and is not just a utility
+called '[['.  It is not portable, so not discussed here (though
+bash implements it too).  I recommend the ksh book XXX if you
+want to read about it.
+
+
+section exit status numbers
+
+One of the problems with the condition in an 'if' statement is
+errors.  If I'm looking for a string in a file with
+'grep needle "$haystack"' then this will be false when 'needle'
+is not found in '$haystack'.  It will also be false when
+'$haystack' is a file that can't be found, or that can be found
+but can't be opened.  These are the sort of things that in a
+proper programming language (like Python or Ruby) would probably
+be *exceptions*, but in shell a command with errors will
+merely have non-zero exit status.  If you're lucky.
+
+In the case of 'grep' the exit status is 0 when successful (when
+there are selected lines), 1 when there are no selected lines,
+and more than 1 when there are errors.  The exit status of the
+last pipeline is the special parameter '$?'.  With 'test' we can
+check the particular value of '$?':
+
+CODE
+grep needle haystack
+e=$?
+if [ $e -eq 0 ]
+then
+    echo success
+elif [ $e -eq 1 ]
+then
+    echo failure
+else
+    echo error
+fi
+/CODE
+
+In this example, '$?' has to be saved in the '$e'; it would be a
+mistake to use '$?' in all the tests, as the subsequent tests
+would not be testing the exit status of the 'grep' command but
+the exit status of the condition in the 'if'.
+
+In practice, it's clearer and better to use 'case', which is
+coming up soon.
+
+
 section 'expr'
 
-The utility 'expr' is really for evaluating expressions.  It
+The utility 'expr' is not as well suited for using in a
+condition as 'test' is.  It's really for evaluating expressions.  It
 usually produces output which has to be suppressed (with the
 redirection '> /dev/null') when used as a condition.  But
 because it has a wide range of different expressions, and
@@ -440,8 +507,14 @@ expr "X$a" \< "X$b"
 which now looks like the workaround that we all used to use for
 'test'.
 
-Don't forget to suppress the output of 'expr' when using it as a
-condition.
+The *output* of expr is the value of the expression, which for
+the comparisons above is either 0 when the expression is false,
+or 1 when the expression is true.  This is *Iverson's convention*
+used by C and other languages.  But the *exit status* of expr is
+0 when true and 1 when false.  Beware.
+
+In any case when using 'expr' as a condition, the output must be
+suppressed.
 
 CODE
 if expr "$x" \> F > /dev/null || expr "$x" \< A > /dev/null
@@ -454,6 +527,150 @@ Personally, I don't find myself using 'expr' to compare the
 ordering of strings very much, but I mention it here as the
 portable way I've found of doing that in shell, if you have to.
 
+'expr' matches regular expressions with the ':' operator.
+
+CODE
+expr "$v" : RE
+/CODE
+
+The string on the left of ':' is matched against the regular
+expression 'RE' which is anchored at the beginning of the
+string.  In the simple cases 'RE' has no subexpressions and the
+value of the expression is the number of characters
+matched (and is 0 on failure); when 'RE' has subexpressions the
+*string* matched by the first subexpression is the value.
+
+I don't use it much.  Simple string matching is better performed
+with 'case' (coming next), and regular expressions quickly get
+complicated enough to be the sole subject of an entire book (Mastering
+Regular Expressions).
+
+
+section case
+
+As hinted earlier, 'case' can be used to match a string against
+one of several patterns.  The syntax:
+
+CODE
+case word in
+    (pattern1) compound-list;;
+    (pattern2|pattern3) compound-list;;
+esac
+/CODE
+
+There can be as many '(pattern) command;;' alternatives but
+there must be at least one (bash and dash accept 'case word in
+esac', but ksh rejects it; the spec permits ksh to do this).
+';;' is recognised by shell as a single token;
+there cannot be spaces between the semicolons, and a newline will
+not do instead.  ';;' is optional on the last command (which is
+terminated by 'esac') but I've never seen it left off.  The opening
+'(' of '(pattern)' is optional and in older shells it is an error
+to put one there.  It was added so that parenthese could match in a
+'$(...)' substitution.  Most shell programmers use the old style
+syntax without the '(', but I have grown to like the balanced
+nature of the "modern" syntax.
+
+'word' is matched against each of the patterns in turn, and the
+first one that matches will cause the compound-list to be run.
+Only one match can be succesful, if one pattern matches, none of
+the remaining patterns are checked.
+
+When the pattern is of the form '(pattern1|pattern2)', then this
+specifies alternatives; there can be many alternatives, each
+separated with '|'.  'word' is matched against each alternative.
+
+The patterns are the same as used in globbing. '*' matches any
+sequence (including an empty one); '?' matches any one
+character; '[abc]' matches one character from a particular class.
+
+CODE
+match () {
+    case $1 in
+        (h*) echo starts with h;;
+        (???) echo 3 characters long;;
+        (*) echo just a string;;
+    esac
+}
+match hat
+match cat
+match frog
+/CODE
+
+The pattern matches in 'case' are less complicated than in
+globbing.  '/' is not special when matching, and all that
+nonsense with '.' at the beginning is gone.  That stuff is just
+for matching filenames when globbing.
+
+Simple cases are much like using 'test "$thing" = "$otherthing"':
+
+CODE
+case $# in
+    (0) echo no argument;;
+    (*) echo some arguments;;
+esac
+/CODE
+
+Let's look at some equivalences between 'if [ ...' and 'case':
+
+CODE
+if test "$a" ; then echo non-empty ; fi
+case $a in ('');;(*) echo non-empty;; esac
+
+if test -z "$a" ; then echo empty ; fi
+case $a in ('') echo empty;; esac
+
+if [ "$a" = "$b" ] ; then echo equal ; fi
+case $a in ($b) echo empty;; esac
+/CODE
+
+In ancient times when 'test' was not a shell built-in and even
+good programmers sometimes cared about the time it took to fork
+and exec an external program then it was not unusual to see
+'case' used where 'test' would be perfectly clear.  These days
+one should use whichever is clearer.  Selecting among
+alternatives is a job for 'case', running commands when a
+certain condition obtains is a job for 'if'.  Of course there is
+plenty of overlap.
+
+
+section parameters
+
+'${var:-default}' selects one of two values, either '$var' or 'default',
+so is like a particular form of 'if'.
+
+CODE
+# Picking defaults
+if [ "$a" = '' ]; then a=echo; fi
+a=${a:-echo}
+/CODE
+
+Imagine we have a program with a logging stream that we wish to
+enable or disable:
+
+CODE
+if test "$logging"; then echo server starting; fi
+/CODE
+
+This quickly gets tedious.  Recall the trick of setting
+'$logging' to 'true' or 'false':
+
+CODE
+$logging && echo server starting
+/CODE
+
+Even this gets tiring.  Instead arrange for '$log' to have the
+value 'echo' when we want logging, and ':' otherwise:
+
+CODE
+$log server starting
+/CODE
+
+This works because ':' takes any arguments and does nothing with
+them.  Thus we can enable or disable logging.
+
+Using 'env' and ':' would allow a command to be run or not, but
+I can't think of a very good use for this.
 
 FN
 Actually the simplest case is no arguments, just 'test'.  In
