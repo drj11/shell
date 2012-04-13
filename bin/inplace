@@ -1,0 +1,37 @@
+#!/bin/sh
+# inplace
+# Edit *file* in-place by piping it into *command*, then when
+# command has completed, piping the output back to *file*.
+
+usage="$0 [-i] [-h|--help] file command [args ...]"
+
+ignore=false
+while [ $# -gt 0 ]
+do
+    case $1 in
+      (-i) ignore=true; shift;;
+      (-h|--help) echo "$usage"; exit 0;;
+      (-*) echo 1>&2 "Unknown option $1.  Usage:
+$usage"; exit 2;;
+      (*) break;;
+    esac
+done
+
+if [ $# -lt 2 ]
+then
+    echo 1>&2 "File and command arguments required.  Usage:
+$usage"; exit 2
+fi
+
+file=$1
+shift
+
+# A random hex number
+rh=$(dd bs=1 count=8 </dev/urandom 2>&- | od -A n -t x1 | sed 's/ //g')
+
+stuff=$("$@" < "$file" || $ignore && printf $rh)
+case $stuff in
+  (*$rh) stuff=${stuff%$rh}
+    printf '%s' "$stuff" > "$file";;
+esac
+
