@@ -8,3 +8,17 @@ http://www.in-ulm.de/~mascheck/bourne/v7/
 Awesome history and comparison:
 
 Software Carpentry version 4.
+
+[DRAGON]
+Aho, Sethi, Ullman, "Compilers: Principles, Techniques, and
+Tools", Addison-Wesley, 1986. ISBN 0-201-10088-6
+(the subsequent edition is probably also worthwhile)
+
+[KORNSHELL]
+Morris I. Bolsky, David G. Korn;
+"The KornShell Command and Programming Language";
+Prentice Hall; 1988; ISBN 0135169720
+(the authoritative reference for ksh88 which was a major
+inspriration for the POSIX standard.  The subsequent edition is
+probably also worthwhile)
+
