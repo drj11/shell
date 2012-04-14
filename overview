@@ -1,3 +1,4 @@
+Fast Forward Grand Tour
 chapter-pipe            Commands and Pipelines
     An introduction to simple commands and straightforward pipes.
     commands and arguments.
@@ -7,9 +8,10 @@ chapter-redirect        Files and Redirections
     Reading from and write to files; redirecting from and to files.
 What the Shell sees; what the command sees
     Quoting, globbing, arguments, redirects
-Functions
-Loops and Testing
 Arguments, Options, Variables
+Functions
+chapter-branching       if, case, test, expr, $?
+chapter-looping
 backquote
 Environment, Subshell, Process
 Pipelines II
@@ -22,3 +24,6 @@ Portability and POSIX
 Unix Kernel Exposed, Blocks, Redirections II
 sed and awk (and bc?)
 find, grep, ls
+History
+Glossary
+Bibliography
