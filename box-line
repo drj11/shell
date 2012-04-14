@@ -1,0 +1,54 @@
+'line'
+
+Can we write 'line' in shell?  It can be instructive to try and
+write some of the standard utilities in shell.  'line' is a
+utility that reads exactly one line of input and copies it to
+its output.  'line' guarantees to read byte-by-byte so that when
+used in a pipe, it consumes no additional input (compare 'ps -ef
+| { line;grep /sbin/;}' with 'ps -ef | { head -1;grep /sbin/;}').
+
+The algorithm is easy: copy, one byte at a time, the input to the
+output, stopping when you read a newline.  In C this is easy,
+the read() system call has an argument that allows the caller to
+read as many, or as few, bytes as you want.  In shell we have to
+use the clumsy 'dd bs=1 count=1'.  Using command substitution we
+can read a single byte of input into a variable:
+
+CODE
+a=$(dd bs=1 count=1 2>&-)
+/CODE
+
+Note also how we close stderr to silence the otherwise quite
+prolix 'dd'.
+
+When I started to write this, I thought the tricky thing would
+be to match a single newline.  It turns out that this program
+works, seemingly for all the wrong reasons:
+
+CODE
+{{ 'code-line.sh' | content | trim }}
+/CODE
+
+When the byte is a newline, then
+TT a=$(dd bs=1 count=1 2>&-) /TT assigns 'a' an empty string.
+That's because command substitution always removes all trailing
+newlines from the command's output, before substituting it.
+There's no way around that, I tried double quotes but that only
+prevents field splitting (using IFS); there is no field
+splitting for an assignment anyway, so double quotes have no
+effect.
+
+Note that this is an example of a 'while' loop where all the
+interesting stuff happens in the test part (between 'while' and
+'do') and there is no body at all (except that for syntactic
+reasons we have to put some command there, so we use ':').  See
+XXX
+
+We use 'case' to match '$a' when it is empty, printing a newline
+and exiting; the empty quoted string turns out to be necessary.
+What if there is end-of-file before a newline is reached? In
+that case 'dd' outputs nothing, so $a is empty in that case too.
+Meaning that the empty pattern will match and the program will exit.
+It turns out that outputting a newline in this case, also matches the
+behaviour of the 'line' utility that I tried on Ubuntu.
+Perfect.
