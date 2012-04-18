@@ -1,6 +1,6 @@
 sidebox Process
 
-A process is a fundamental concept in Unix.  A Unix process can be
+The process is a fundamental concept in Unix.  A Unix process can be
 independently scheduled by the kernel, and generally has a separate
 memory address space from other processes (although processes can
 share read-only portions of their memory, and may arrange to share
@@ -35,4 +35,26 @@ Exercise: What if you use the *cd*, but don't use the subshell?
 
 Exercise: Why is that bad?
 
+
+section forking
+
+All Unix processes, except the first, are created by *forking*, in
+which an existing process (the parent) calls the fork() system call.
+This creates a *child process* which is an exact copy of the parent 
+process except
+in one detail, the result of calling the fork() system call (because
+the child is a copy of the parent, both processes behave as if
+they have just returned from the fork() system call).  Shell does not
+contain any way to fork explicitly but of course the implementation
+forks to run external utilities, and probably forks to run subshells.
+
+section file descriptors
+
+File descriptors are shared between forked processes.  All of
+the file descriptors that the parent has open will still be open
+in the child after a fork.
+
+CODE
+{ echo foo; dd bs=1000 seek=1 count=0; echo bar; } > foo
+/CODE
 

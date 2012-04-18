@@ -1,24 +1,30 @@
 Whether to use #! or not.
 
 The Single Unix Specification say that the behaviour of shell scripts
-starting with #! is unspecified.  This is because the traditional
-behaviour is to run the interpreter named after the #!.  Obviously
-everyone puts /bin/sh there, but Single Unix Specification doesn't say
-that /bin/sh has to be a conforming shell.  It could be some ancient
+starting with #! is unspecified.  The spec left it unspecified
+because they didn't want to say that '/bin/sh' was a conforming
+shell, so they didn't want to bless '#!/bin/sh' as the portable
+way to specify a portable shell script.
+
+It could be that '/bin/sh' is some ancient
 version of shell kept around for compatibility, while the
 conforming shell was in /opt/posix/sh (typical of commercial Unix
 systems in the 1990's).  No-one is going to put #!/opt/posix/sh at the
 beginning of their shell scripts.
 
 The Single Unix Specification says that a shell script without a #! will
-get executed by a subshell, so you don't need to start your scripts with
-anything in particular.  That feels too weird.  Besides that
-only works if the shell that finds and runs your shell program is
-a SUS conforming shell.  What if you want someone who is not
-using a conforming shell to run your shell program (written in
-conforming shell)?  I start all my scripts with #!/bin/sh, which for the
-last decade or so has been a conforming shell on any Unix system I care
-to use.
+get executed by invoking shell as an interpreter for it.  So you don't
+need to start your scripts with anything in particular.  That feels
+too weird.  Besides, that only works if the shell that finds and runs
+your shell program is a SUS conforming shell.  What if you want someone
+who is not using a conforming shell to run your conforming shell
+program?  (ah, moot point, friends don't let friends run 'csh').
+
+Except in rare cases, I start all my scripts with #!/bin/sh, which for
+the last decade or so has been a conforming shell on any Unix system I
+care to use.  I recommend you do the same, and if anyone tries
+to sell you a Unix system where '/bin/sh' is not a conforming
+shell, then 'la la la la la' might be an appropriate response.
 
 Exercise: write an *installer* program that copies a shell script into a
 directory, adding or replacing the first #! line of the script, to be
