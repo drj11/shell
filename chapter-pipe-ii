@@ -53,8 +53,8 @@ can preview the dynamic script by leaving off the "| sh" at the end,
 fiddling with the 'sed' commands until the script looks right, and then
 finally executing it by add "| sh".
 
-In this fairly typical example, I had created a file m1.txt and for
-testing purposes wanted it copied to files m2.txt through to m12.txt:
+In this fairly typical example, I had created a file 'm1.txt' and for
+testing purposes wanted it copied to files m2.txt through to 'm12.txt':
 
 CODE
 ran 2 13 | sed 's/.*/cp m1.txt m&.txt/' | sh

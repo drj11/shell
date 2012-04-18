@@ -33,7 +33,7 @@ that is the sense in which I use it throughout this work.
 There is more than one *shell*, and they don't all implement the same
 programming language.  In this book I mostly refer to any shell that
 implements the Single Unix Specification Shell Command Language.  The
-GNU project's Bash shell and AT&T's Korn shell both implement this
+GNU project's Bash and AT&T's KornShell both implement this
 specification (more or less) and it's been pretty hard to find a version
 of Unix that doesn't ship either one of those shells or another equally
 good shell as /bin/sh since about the year 2000.  There are some minor
@@ -51,7 +51,11 @@ and the remainder of the line form the *arguments* to that command.
 
 There is a default place that commands write output to, it is called
 *standard output*.  I shall call it *stdout* for short, and to
-emphasise that it has a technical meaning.
+emphasise that it has a technical meaning.  If you are logged
+into your Unix system and are running commands "on the command
+line" then stdout is your terminal, where you can see the output
+(these days, a terminal is likely to be a graphical program with
+a window that emulates a historic terminal).
 
 Although 'echo' is a pretty simple command, it sees a lot of use in
 shell programs.  It's used for sending messages to the user's
