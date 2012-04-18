@@ -1,0 +1,28 @@
+#!/bin/sh
+# inkeyex
+# Demonstrate key-at-a-time processing in shell
+
+sttysave=$(stty --save)
+
+atexit () {
+    stty "$sttysave"
+    echo restored stty
+}
+
+trap atexit EXIT
+
+stty -icanon min 1 -echo -echonl
+
+inkey () {
+    dd 2>&- bs=1 count=1
+}
+
+echo "Press << q >> to exit"
+
+while : ; do
+    a=$(inkey)
+    echo key '<<' "$a" '>>'
+    case $a in
+        (q) exit;;
+    esac
+done
