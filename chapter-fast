@@ -1,0 +1,74 @@
+Fast Forward Grand Tour
+
+Fasten your seat-belts; do not lean out of the window.
+
+Shell executes commands.  *Simple commands* have a command name,
+possibly followed by arguments:
+
+CODE
+id
+printf '/usr/%s\n' etc lib bin
+/CODE
+
+Commands can be made into pipelines, so that the output of each
+command (except the last) becomes the input of the following
+command.
+
+CODE
+printf '%s\n' bob cat fish food | grep o | tr b m
+/CODE
+
+A command's input can be taken from a file, using '<', and its
+output can be redirected to a file, using '>'.
+
+CODE
+head /etc/passwd > 10
+cksum 10
+/CODE
+
+Shell parameters (also called variables) are assigned using
+'var=value'; their value is "expanded" into a command using
+'$var'.
+
+CODE
+cmd=printf
+printf "%s\n" $cmd
+$cmd "-- %s --\n" $cmd
+/CODE
+
+Quoting is used to suppress word splitting and remove the magic
+of shell special characters (we have seen '>' '<' '|' and '$' so
+far).  A single quote prevents word splitting and removes the
+magic from all characters up to the next single quote.  A '\'
+(backslash) removes itself and the magic from the next character.
+A double quote '"' prevents word splitting up to the next unquoted '"';
+inside a double quoted string '$' is magic (with its usual
+meaning) and '\' followed by '\', '$', or '"' is replaced with
+'\', '$', or '"' respectively.
+
+CODE
+greet="Hello world"
+printf %s\\n $greet
+printf %s\\n "$greet"
+printf quoted\ \'%s"'\n" "$greet and everyone else"
+printf '%s is a special character\n' "'" '|' \& '(' '$' ')'
+printf "Inside a double quoted string \$ must be quoted: \\\$\n"
+/CODE
+
+XXX show example containing newline
+
+A command's input can also come from a string in the program, a
+*here-document*.  The string starts with '<< delim' and ends
+with 'delim' on a line of its own.  Parameter expansion takes
+place, unless 'delim' is quoted.
+
+CODE
+name=bob
+cat << EOF
+Hello $name
+EOF
+cat <<\!
+Parameter expansions, like $name, are suppressed here.
+!
+/CODE
+

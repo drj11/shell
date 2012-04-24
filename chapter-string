@@ -1,0 +1,94 @@
+String Manipulation
+
+When it comes to string manipulation, shell has two surprises.
+It's surprising what you can do, and it's surprising what you
+can't do.
+
+It's surprisingly difficult to get the first or last character
+of a string.  'printf' to the rescue:
+
+CODE
+printf '%.1s' pqrs
+v=lemur
+v=$(printf '%.3s' "$lem")
+/CODE
+
+It's still not easy to get the last character.
+
+It's surprisingly easy to get everything but the first (or last)
+character.  As long as the string you wan't to manipulate is in
+a parameter.
+
+CODE
+a=flake
+echo "${a%?}"
+echo "${a#?}"
+CODE
+
+This does lead to a way to get the first character.  Form a
+string that has the first character removed, then remove that
+string from the end of the original.
+
+CODE
+a=flake
+echo ${a%"${a#?}"}
+/CODE
+
+And similarly to get the last character:
+
+CODE
+a=flake
+echo ${a#"${a%?}"}
+/CODE
+
+Sustitution is possible, but only in particular cases.  If you
+have a list of files that end in .JPG and want them renaming to
+.jpg then that's:
+
+CODE
+for n in *.JPG; do mv "${n%.JPG}.jpg"; done
+/CODE
+
+It is possible, but awkward to substitute one string for
+another.  If we want to replace 'foo' with 'bar' in a string,
+throw away 'foo' and everything after it, that's the prefix of
+our result, throw away 'foo' and everything before it, that's
+the suffix of our result; between the two parts of the result,
+put 'bar'.
+
+CODE
+printf '%s\n' "${var%%foo*}bar${var#*foo}"
+/CODE
+
+Recall (from Chapter XXX) that '${var%%foo*}' expands to '$var'
+with any suffix matching the pattern 'foo*' removed,  and '${var#*foo}'
+expands to '$var' with any prefix matching '*foo' removed.  '%%'
+matches the longest suffix, and '#' matches the shortest prefix,
+so both of this will anchor at the first occurence of 'foo', so
+they do the right thing when 'foo' appears in '$var' more than
+once.
+
+It's a bit ugly, but not too bad if we abstract it into a
+function:
+
+CODE
+sub () {
+    printf '%s\n' "${1%%$2*}$3${1#*$2}"
+}
+sub banana an and
+/CODE
+
+Note that this version accepts shell patterns in the search
+string.
+
+CODE
+sub sector9 [0-9] _nine
+CODE
+
+
+This is getting a bit mad.  Unless you have some extreme reason
+for keeping everything in the shell, then it's better to do
+string editing using an external utility.  'sed' is the classic
+choice, and is worth about half a book.
+
+Note: In printf '*' is not portable.

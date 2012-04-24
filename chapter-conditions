@@ -1,0 +1,81 @@
+Conditions
+
+A condition is a command used in the condition of an 'if', seen
+in the previous chapter.  We'll also see them used in 'while'
+and 'for' loops in the next chapter. Bridging the two chapters,
+I'll explore some of the more important, and perhaps
+non-obvious, utilities used for conditions.
+
+@@ move 'expr' and 'test' from previous chapter into here.
+
+section find
+
+'test' provides a few useful tests on files, but if you want to test
+the length of a file, or a file's owner, or its age, you can't
+do that using 'test'.  You can do it, portably, using 'find',
+but it's quite awkward.
+
+CODE
+find /var/log/mail.log -size +1000k
+/CODE
+
+This will tell you if '/var/log/mail.log' is bigger than 1,024,000
+bytes or not.  But it doesn't use the exit status to tell you
+that; instead, the string '/var/log/mail.log' will be written to
+stdout when the file exceeds the size, otherwise there will be
+no output.  We can use a command expansion and 'test' to
+usefully put this into an 'if':
+
+CODE
+if test "$(find /var/log/mail.log -size +1000k)"
+then
+    echo big mail.log
+else
+    echo nothing to worry about
+fi
+/CODE
+
+It even has a certain poetic quality to it.
+
+'find' has many options and plenty of opportunity for use and
+misuse.  In the context of testing various aspects of files,
+you'll find the following options useful:
+
+-size
+-newer
+-atime
+-ctime
+-mtime 
+-group # owned by group
+-user # owned by user
+(and conceivably)
+-links
+-xdev
+
+There is also '-type' but most of the tests can be done with
+'test' more easily.
+
+'-size'
+
+'find A -newer B' outputs 'A' when 'A' is newer (modified more
+recently than) 'B'.
+
+'-atime', '-ctime', '-mtime', test a file's last time of access,
+inode change time, and last modification time respectively.
+Note that on some systems a file may be on a file system where
+access times are not record (it generates writes to disk just by
+reading a file, so may be undesirable). 'ctime' is often
+memorised as "creation time", but 'chmod' and 'chown' and other
+commands will change modify the inode so it may not be the
+creation time.  'mtime' is not a guarantee that the file has not
+changed since a certain time, since some utilties, like 'touch',
+'tar', and 'cp', can set it to any particular time.
+
+The accounting system used for testing age of a file is a little
+bit unusual.  As for '-size', a number *n* means exactly *n*,
+*+n* means more than *n*, and *-n* means less than *n*.  But the
+units that are compared are days, completely ignoring fractional
+days.
+
+
+Exercise: Can -xdev be used to implement pwd?  Very tricky
