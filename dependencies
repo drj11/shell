@@ -1,2 +1,4 @@
+requirements-precede thing-that-uses-them
 file-descriptor redirection
 remove-suffix-pattern box-chu
+variables branching
