@@ -7,8 +7,6 @@ blank password.  Cool.
 get from my blog the script that RB uses to generate passwords that
 ends 'exec foo...', and explain why.
 
-"| sh" versus backtick versus xargs versus "while read a"
-
 Sparklines in shell: https://github.com/holman/spark
 echo *.py versus ls *.py
 
@@ -21,6 +19,9 @@ Agile Shell Programming
 
 Things we might implement as a practical project for the book:
 
+timeout command.
+  timeout 10 perl somescript
+Monte Carlo Pi method (from the Apple documentation)
 railroad syntax diagrams in shell
 bignums
 some sort of server, using netcat
