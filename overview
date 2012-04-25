@@ -6,11 +6,13 @@ chapter-pipe            Commands and Pipelines
     filter
 chapter-redirect        Files and Redirections
     Reading from and write to files; redirecting from and to files.
+Arguments, Options, Parameters
 What the Shell sees; what the command sees
+    Tokens
     Quoting, globbing, arguments, redirects
-Arguments, Options, Variables
 Functions
-chapter-branching       if, case, test, expr, $?
+chapter-branching       if, case, $?
+chapter-conditions      test, expr, find
 chapter-looping
 backquote
 Environment, Subshell, Process
@@ -21,6 +23,7 @@ Functional Programming
     Limits to the function activation stack.
 Arithmetic Expansion
 Portability and POSIX
+Performance
 Unix Kernel Exposed, Blocks, Redirections II
 sed and awk (and bc?)
 find, grep, ls
