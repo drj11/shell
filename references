@@ -7,6 +7,10 @@ Jonathan Dursi's notes. not bad.  classically scripty.
 http://www.in-ulm.de/~mascheck/bourne/v7/
 Awesome history and comparison:
 
+Apple have a "shell scripting primer" as part of their developer
+documentation.  Pretty good, but contains some poor examples.
+http://developer.apple.com/library/mac/#documentation/opensource/conceptual/shellscripting/Introduction/Introduction.html#//apple_ref/doc/uid/TP40004268-TP40003516-SW1
+
 Software Carpentry version 4.
 
 [DRAGON]
