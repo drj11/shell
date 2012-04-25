@@ -1,0 +1,7 @@
+*.pyc
+
+# dexy
+logs
+output
+output-long
+rendered
