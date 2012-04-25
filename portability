@@ -18,3 +18,6 @@ subshell (bash and dash execute it in a subshell, ksh does not).
 The exit status of a command that received a signal is merely
 specified as being bigger than 128.  bash and dash do the
 traditional thing of adding 128; but ksh adds 256.
+
+FreeBSD and GNU 'find' differ from spec for -atime,-ctime,-mtime
+options.  By one day.
