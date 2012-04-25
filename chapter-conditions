@@ -12,8 +12,8 @@ section find
 
 'test' provides a few useful tests on files, but if you want to test
 the length of a file, or a file's owner, or its age, you can't
-do that using 'test'.  You can do it, portably, using 'find',
-but it's quite awkward.
+do that using 'test'.  You can do some of these things portably
+using 'find'; be warned that it can be quite awkward.
 
 CODE
 find /var/log/mail.log -size +1000k
@@ -36,6 +36,11 @@ fi
 /CODE
 
 It even has a certain poetic quality to it.
+
+Recall (from earlier in this chapter), that 'test' followed by a
+single argument is true when the argument is non-empty and false
+when the argument is empty.  So it tests whether 'find' produced
+any output or not.
 
 'find' has many options and plenty of opportunity for use and
 misuse.  In the context of testing various aspects of files,
@@ -63,13 +68,18 @@ recently than) 'B'.
 '-atime', '-ctime', '-mtime', test a file's last time of access,
 inode change time, and last modification time respectively.
 Note that on some systems a file may be on a file system where
-access times are not record (it generates writes to disk just by
+access times are not recorded (it generates writes to disk just by
 reading a file, so may be undesirable). 'ctime' is often
 memorised as "creation time", but 'chmod' and 'chown' and other
-commands will change modify the inode so it may not be the
+commands will change the inode so it may not be the
 creation time.  'mtime' is not a guarantee that the file has not
 changed since a certain time, since some utilties, like 'touch',
 'tar', and 'cp', can set it to any particular time.
+
+Sadly you can't use realistically use '-?time' portably, because
+two major implementations of 'find', GNU
+find and FreeBSD find, don't implement the standard operators properly
+(they are off by 1 day).
 
 The accounting system used for testing age of a file is a little
 bit unusual.  As for '-size', a number *n* means exactly *n*,
