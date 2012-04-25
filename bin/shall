@@ -1,0 +1,9 @@
+#
+# shall
+# execute command in all shells.
+
+for a in bash dash ksh
+do
+    echo -- $a --
+    "$a" -c "$*"
+done
