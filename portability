@@ -8,8 +8,9 @@ source
 (although alias source=. seems to be an entirely adequate
 replacement, and works in bash where it is not required)
 
-bash requires that the body of a function definition has braces around
-it.  This is good programming style, but is not actually required by
+bash requires that the body of a function definition is a block
+formed with braces or parentheses around it.
+This is good programming style, but is not actually required by
 POSIX.  dash and ksh accept function definitions without braces.
 
 The last command of a pipeline may or may not be executed in a
