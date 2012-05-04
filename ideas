@@ -10,6 +10,11 @@ ends 'exec foo...', and explain why.
 Sparklines in shell: https://github.com/holman/spark
 echo *.py versus ls *.py
 
+Heiner Steven has a nice article about signal handling:
+http://www.shelldorado.com/goodcoding/tempfiles.html
+(short version: "trap 'rm $tmpfile' 0; trap 'exit 99' 1 2 3 15")
+
+
 Book Titles:
 
 Portable Shell for the Working Programmer
