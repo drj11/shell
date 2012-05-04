@@ -20,5 +20,9 @@ The exit status of a command that received a signal is merely
 specified as being bigger than 128.  bash and dash do the
 traditional thing of adding 128; but ksh adds 256.
 
-FreeBSD and GNU 'find' differ from spec for -atime,-ctime,-mtime
-options.  By one day.
+The Single Unix Specification Version 2 specified the wrong
+behaviour for 'find -atime' etc.  FreeBSD and GNU 'find' follow
+the Unix Version 7 behaviour where '-mtime 0' finds files up to
+a day old.  It's just possible that there are some Unix systems
+that accidentally implemented the SUSv2 behaviour.  Fixed in
+SUSv3 and beyond.
