@@ -621,7 +621,7 @@ if test -z "$a" ; then echo empty ; fi
 case $a in ('') echo empty;; esac
 
 if [ "$a" = "$b" ] ; then echo equal ; fi
-case $a in ($b) echo empty;; esac
+case $a in ("$b") echo empty;; esac
 /CODE
 
 In ancient times when 'test' was not a shell built-in and even
@@ -640,8 +640,9 @@ section parameters
 so is like a particular form of 'if'.
 
 CODE
-# Picking defaults
+# Picking defaults.
 if [ "$a" = '' ]; then a=echo; fi
+# Much the same as:
 a=${a:-echo}
 /CODE
 
