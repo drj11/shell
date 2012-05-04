@@ -63,9 +63,10 @@ positional parameters then '$#' will be 0 and the condition
 '[ $# -gt 0 ]' will fail; if the positional parameter '--' is supplied
 then this indicates the end of option processing, and the remaining
 positional parameters will be treated as arguments; if '-' followed
-by some unknown option appears, then the program will exit (with
-a non-zero exit status); if there is any other sort of positional
-parameter then that must be the end of option process and the start
+by some unknown option appears, then the program will exit with
+a non-zero exit status (note, not just the loop is terminated
+but the entire program); if there is any other sort of positional
+parameter then that must be the end of option processing and the start
 of the arguments proper.
 
 It's not unusual to want a loop that runs forever, in which case
@@ -82,7 +83,7 @@ done
 
 The above lists the details for the file '/var/log/mail.log', including
 its size, so this can be used to monitor the file as it grows.
-Used interatively, the loop can be interrupted by pressing Ctrl-C (or
+Used interactively, the loop can be interrupted by pressing Ctrl-C (or
 whatever your 'intr' character has been set to, see 'stty -a').
 
 
@@ -140,7 +141,9 @@ output ('%d', '%f', and many other friends are also supported, see
 the spec for details).  Note also that '\n' is converted to a
 newline (again, following the convention from C).
 
-When there are multiple arguments, the format gets reused:
+There is looping because the format (the first argument) gets
+used (and printed out) as many times as is necessary to use up
+all the subsequent arguments.
 
 CODE
 printf '%s\n' bash dash ksh sh
@@ -149,6 +152,9 @@ printf '%s\n' bash dash ksh sh
 In this case each argument gets printed on a separate line.  So this is
 like the loop 'for a in bash dash ksh sh; do echo "$a"; done'.  In fact
 in this case the 'printf' version is better for all sort of reasons.
+
+
+
 
 CODE
 printf '%s:' args ...
