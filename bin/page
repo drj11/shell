@@ -12,7 +12,8 @@ atexit () {
     stty "$sttysave" <&2
 }
 
-trap atexit EXIT INT QUIT TERM
+trap atexit EXIT
+trap 'exit 99' INT QUIT TERM
 
 stty -icanon min 1 -echo -echonl <&2
 
