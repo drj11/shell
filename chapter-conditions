@@ -16,10 +16,10 @@ do that using 'test'.  You can do some of these things portably
 using 'find'; be warned that it can be quite awkward.
 
 CODE
-find /var/log/mail.log -size +1000k
+find /var/log/mail.log -size +1000000c
 /CODE
 
-This will tell you if '/var/log/mail.log' is bigger than 1,024,000
+This will tell you if '/var/log/mail.log' is bigger than 1,000,000
 bytes or not.  But it doesn't use the exit status to tell you
 that; instead, the string '/var/log/mail.log' will be written to
 stdout when the file exceeds the size, otherwise there will be
@@ -27,7 +27,7 @@ no output.  We can use a command expansion and 'test' to
 usefully put this into an 'if':
 
 CODE
-if test "$(find /var/log/mail.log -size +1000k)"
+if test "$(find /var/log/mail.log -size +1000000c)"
 then
     echo big mail.log
 else
@@ -60,32 +60,50 @@ you'll find the following options useful:
 There is also '-type' but most of the tests can be done with
 'test' more easily.
 
-'-size'
+Be warned that it is the easiest thing in the world to write
+something non-portable using 'find'.  The specification is weak,
+and it is common for implementations of 'find' to have lots of
+extensions which mar or may not be compatible with each other or
+with the spec.  The extensions are often very useful.
+
+'-size' tests the size, in bytes, of a file.
+
 
 'find A -newer B' outputs 'A' when 'A' is newer (modified more
 recently than) 'B'.
 
 '-atime', '-ctime', '-mtime', test a file's last time of access,
 inode change time, and last modification time respectively.
-Note that on some systems a file may be on a file system where
-access times are not recorded (it generates writes to disk just by
-reading a file, so may be undesirable). 'ctime' is often
-memorised as "creation time", but 'chmod' and 'chown' and other
-commands will change the inode so it may not be the
-creation time.  'mtime' is not a guarantee that the file has not
-changed since a certain time, since some utilties, like 'touch',
-'tar', and 'cp', can set it to any particular time.
 
-Sadly you can't use realistically use '-?time' portably, because
-two major implementations of 'find', GNU
-find and FreeBSD find, don't implement the standard operators properly
-(they are off by 1 day).
+'find A -mtime 1' will print out 'A' if 'A' is a file with a
+modification time between 24 and 48 hours (1 day, rounded down).
 
 The accounting system used for testing age of a file is a little
 bit unusual.  As for '-size', a number *n* means exactly *n*,
 *+n* means more than *n*, and *-n* means less than *n*.  But the
-units that are compared are days, completely ignoring fractional
+units that are compared are days since the file has been
+modified (in the case of '-mtime', but similarly for access
+time, and inode change time), completely ignoring fractional
 days.
+
+This gives reasonable meaning to '-mtime 7' (meaning modified 7
+days ago) and '-mtime -7' (meaning modified in the last 7 days),
+but '-mtime +7' means modified 8 days or more ago (because the
+age, rounded down to a whole number of days has to be more than
+7).
+
+FN
+
+None of these times can regarded as trustworthy.  On some systems a
+file may be on a file system where access times are not recorded (a
+read-only file system, or a file system where atime has been disabled
+because it generates stream of writes to disk just by reading a file,
+so may be undesirable). 'ctime' is often memorised as "creation time",
+but 'chmod' and 'chown' and other commands will change the inode so it
+may not be the creation time.  'mtime' is not a guarantee that the file
+has not changed since a certain time, since some utilties, like 'touch',
+'tar', and 'cp', can set it to any particular time.
+
 
 
 Exercise: Can -xdev be used to implement pwd?  Very tricky
