@@ -2,8 +2,8 @@
 # shall
 # execute command in all shells.
 
-for a in bash dash ksh
+for a in bash "bash --posix" dash ksh
 do
     echo -- $a --
-    "$a" -c "$*"
+    $a -c "$*"
 done
