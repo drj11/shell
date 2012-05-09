@@ -2,7 +2,7 @@ Loops
 
 Looping, repetition, iteration.  Shell has 'for' loops that
 iterate over a finite list, and 'while' loops that are
-indefinite, a condition determines when, if ever, the loop
+indefinite: a condition determines when, if ever, the loop
 terminates.  There are also 'until' loops (just like 'while' but
 with the condition inverted), but they seem to have been
 relegated to the backwaters of shell.  I'll also show looping
