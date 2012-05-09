@@ -94,7 +94,8 @@ rmdir * 2> /dev/null
 /CODE
 
 Which will remove all directories, in the current directory, that are
-empty; any complaints from 'rmdir' about "Directory not empty" are
+empty (because 'rmdir' will not remove a directory unless it is
+empty); any complaints from 'rmdir' about "Directory not empty" are
 sent to /dev/null.
 
 
@@ -113,7 +114,115 @@ CODE
 err () { echo "$@" 1>&2 ; }
 /CODE
 
+section order
 
+The order in which redirections appear in the command matters;
+they are processed from left to right.  The simple case is one
+you rarely see:
+
+CODE
+echo foo > bar > baz
+/CODE
+
+stdin is first redirected to the file 'bar' (truncating it, and
+creating it if necessary), then stdin is redirected to the file
+'baz', then 'echo' runs, sending its output to the file 'baz'.
+
+Consider the difference between
+
+CODE
+some-command > foo 2>&1
+/CODE
+
+and
+
+CODE
+some-command 2>&1 > foo
+/CODE
+
+The first version redirects stdout to the file 'foo' and then
+redirects stderr to the same place.  Any output for both stdout
+and stderr will end up in the same place, the file 'foo'.  In
+the second version, stderr is redirected to stdout and then
+stdout is redirected to the file 'foo'.  When some-command
+writes to stderr it will appear on the stdout that was in effect
+before any of the redirections.  stdout will appear in the file
+'foo'.
+
+In a pipeline the pipes are setup before the redirections of any
+of the component commands.  So to redirect both stdout and
+stderr through a pipe, the following works:
+
+CODE
+cc *.c 2>&1 | tee log
+/CODE
+
+'tee' is a utility that copies its stdin to both its stdout and
+to any files specifies as arguments.  So this command saves both
+the stdout and stderr of 'cc *.c' in the file 'log' as well as
+displaying them.
+
+
+section stty
+
+File descriptors are all the same, they are not divided into
+input file descriptors and output file descriptors.  It is
+merely a convention of Unix that file descriptor 0 (stdin) is
+used for input and file descriptors 1 and 2 (stdout and stderr)
+are used for output.  It is legal to send output to stdin:
+
+CODE
+echo >&0 hello stdin
+</CODE
+
+If you try this interactively then you'll see the output on your
+terminal just like normal.  No surprises.  We can tell that
+something funny is going on if we redirect stdout.  In this
+example I've put the echo inside a function to make it easier to
+see the different redirections:
+
+CODE
+$ win () { echo >&0 "$@" ; }
+$ win foo > /dev/null
+foo
+/CODE
+
+We still see the output on the terminal, even though stdout has
+been redirected to '/dev/null'.  That's because 'win' sends its
+ouput to stdin, and stdin is attached to your terminal.
+
+This example is a bit silly, but there are times when this kind
+of thing can be useful.
+
+XX CAN'T USE EXAMPLE IN THIS CHAPTER BECAUSE IT USES COMMAND
+SUBSTITUTION XX
+
+'stty size' reports the numbers of rows and columns of the
+terminal.  Let's write a program that displays the first page of
+its input.
+
+CODE
+{{ 'code-1page.sh' | content }}
+/CODE
+
+This looks reasonable, but it doesn't work.  Typically we will
+use this with a redirect: '1Page < /etc/passwd'.  'stty' reports
+on the terminal attached to stdin, and stdin has been redirected
+to be '/etc/passwd/'.  'stty' complains.  We can use a
+redirection to attach stdin to a terminal when we run 'stty'.
+We can't use stdout because 'stty' is run inside a command
+substitution (so its stdout is piped into shell).  We use
+stderr:
+
+CODE
+{{ 'code-1page-fix.sh | content }}
+/CODE
+
+Exercise: Why does 'stty' report on the terminal attached to
+stdin instead of, say, stdout?
+
+
+section exercises
 
 
 Exercise: The lexical rules are a bit obscure; what is the difference
