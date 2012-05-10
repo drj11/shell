@@ -20,10 +20,12 @@ find /var/log/mail.log -size +1000000c
 /CODE
 
 This will tell you if '/var/log/mail.log' is bigger than 1,000,000
-bytes or not.  But it doesn't use the exit status to tell you
-that; instead, the string '/var/log/mail.log' will be written to
+bytes or not.  It would be convenient if this used the exit status
+to tell you that, but it doesn't; instead, the string
+'/var/log/mail.log' will be written to
 stdout when the file exceeds the size, otherwise there will be
-no output.  We can use a command expansion and 'test' to
+no output.  So we need to test whether there is any output or
+none at all.  We can use a command expansion and 'test' to
 usefully put this into an 'if':
 
 CODE
@@ -63,7 +65,7 @@ There is also '-type' but most of the tests can be done with
 Be warned that it is the easiest thing in the world to write
 something non-portable using 'find'.  The specification is weak,
 and it is common for implementations of 'find' to have lots of
-extensions which mar or may not be compatible with each other or
+extensions which may or may not be compatible with each other or
 with the spec.  The extensions are often very useful.
 
 '-size' tests the size, in bytes, of a file.
@@ -104,6 +106,32 @@ may not be the creation time.  'mtime' is not a guarantee that the file
 has not changed since a certain time, since some utilties, like 'touch',
 'tar', and 'cp', can set it to any particular time.
 
+'find' uses '!' to negate the test.  So
+
+CODE
+find foo ! -mtime -7
+/CODE
+
+will print 'foo' when it has not been modified in the last 7
+days.
+
+section digression
+
+Since 'test' and shell itself also use '!' to invert the logic
+test, that means that the following all have the same meaning.
+
+CODE
+test $(find foo ! -mtime -7) && echo old
+test ! $(find foo -mtime -7) && echo old
+! test $(find foo -mtime -7) && echo old
+/CODE
+
+Although these all have the same meaning, that's not because '!'
+is in any way magical.  It is merely the case that 'find',
+'test', and shell each use this token to negate a condition.
+Obviously this is no coincidence, they have been designed that
+way, but in principle each utility could have chosen to use
+something other than '!' (which comes from C by the way).
 
 
 Exercise: Can -xdev be used to implement pwd?  Very tricky
