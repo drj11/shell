@@ -10,11 +10,11 @@ Arguments, Options, Parameters
 What the Shell sees; what the command sees
     Tokens
     Quoting, globbing, arguments, redirects
+backquote
 Functions
 chapter-branching       if, case, $?
 chapter-conditions      test, expr, find
 chapter-looping
-backquote
 Environment, Subshell, Process
 Pipelines II
     An excursion into iteration, xargs, and pipes.
