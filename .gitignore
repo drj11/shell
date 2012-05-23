@@ -3,7 +3,11 @@
 susv2
 
 # dexy
+artifacts
 logs
 output
 output-long
 rendered
+
+# pip
+build
