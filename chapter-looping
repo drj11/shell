@@ -35,7 +35,7 @@ and will cause the while loop to continue; an exit status of
 non-zero is false and will terminate the while loop.
 
 An 'until' loop is just like a 'while' loop except that the
-sense of the condition if inverted.  The loop will repeat as
+sense of the condition is inverted.  The loop will repeat as
 long as 'condition' is false, and terminate when 'condition' is
 true.  They are rare in the wild.
 
@@ -86,10 +86,153 @@ its size, so this can be used to monitor the file as it grows.
 Used interactively, the loop can be interrupted by pressing Ctrl-C (or
 whatever your 'intr' character has been set to, see 'stty -a').
 
+CODE
+while :
+    while test -f /var/run/httpd.pid
+    do
+        sleep 1
+    done
+    apachectl restart
+    until test -f /var/run/httpd.pid
+    do
+        sleep 1
+    done
+done
+/CODE
+
+[looping-ii material]
+
+We can use 'while' to loop over the lines of input from stdin by
+using the 'read' utility.  An ersatz replacement for 'cat' is:
+
+CODE
+while read a
+do
+    echo "$a"
+done
+/CODE
+
+There are several problems with this loop.  The first has
+nothing to with 'while' or 'read': we
+should use 'printf' not 'echo' to output the contents of '$a'
+exactly.  The second is that 'read' will treat a backslash, '\',
+on the end of an input line as indicating that the following
+line should be read as well.  Use the '-r' option ('r' for
+'raw') to make 'read' read exactly the next line of input.  Try
+and get in the habit of using 'read -r' routinely.
+
+CODE
+while read -r a
+do
+    printf '%s\n' "$a"
+done
+/CODE
+
+There is still a bug, but an obscure one.  If the final line of
+input has no terminating newline, then 'read' will re @@
+
 
 section for
 
-blah blah blah 'for'
+A 'for' statement is a loop where the body is executed once for
+each item in a list.  The list has a finite number of items.
+
+The general structure is:
+
+CODE
+for v in list ...
+do
+    something with $v
+    and something else
+done
+/CODE
+
+For each item in the list, the variable, 'v' in this case, is
+assigned the item and the body of the loop, the commands between
+'do' and 'done' are executed.  Like the 'while' loop, 'break'
+and 'continue' can be used to exit the loop early ('break') and
+abandon the current cycle and start the next one ('continue').
+
+'v' can be modifed in the body of the loop, but it has no effect
+on the loop execution:
+
+CODE
+for v in a b c
+do
+    echo $v
+    v=thing
+    echo $v
+done
+/CODE
+
+The list can be the result of the usual shell subsitutions,
+parameter expansion or globbing are common but the others, command
+substitution and tilde expansion can be used.
+
+Here's the kind of script that your lawyers might be glad that
+you had:
+
+CODE
+for f in *.c
+do
+    grep Copyright "$f" > /dev/null ||
+      echo "file '$f' does not contain a Copyright notice"
+done
+/CODE
+
+Note that when parameters are used, they are subject to field
+splitting, unless quotes are used:
+
+CODE
+s='keep it simple, stupid'
+for f in $s
+do
+    printf '%s\n' $f
+done
+/CODE
+
+[move to chapter-looping-ii]
+section compound commands
+
+'while' and 'for' are compound commands (as are 'if' and 'case',
+and what I say here applies to those commands as well, but it's
+just more unusual to see them used in the same way).
+
+For reasons that are obscure to me variable assignments cannot
+be used at the beginning of a 'for' loop, and redirections have
+to appear at the end.  So the simple command
+'PATH=$(getconf PATH) env ls' (not so simple, but if you've been
+following up to now then you should be able to work out what it does)
+is legal, but 'PATH=/usr/bin for v in foo bar baz; do : ; done'
+is not.
+
+Redirections applied to loops apply to the whole loop.  And the
+redirection is made only once.  This means any commands in the
+loop will have their output redirected as well:
+
+CODE
+for f in *.c
+do
+    if test ! -f "${f%.c}.o" || test "$(find "$f" -newer "${f%.c}.o")"
+    then
+        cc "$f"
+    fi
+done 2> err
+/CODE
+[XX Does not clarify discussion]
+
+Individual commands within the loop can use redirections, and
+this does not affect the redirection of the loop itself.
+Clever.
+
+CODE
+for d in */.
+do
+    (cd "$d" 2> /dev/null &&
+     make)
+done 2> err
+/CODE
+
 
 section recursion
 
@@ -122,8 +265,8 @@ find . -exec command ... ';'
 
 If you find yourself writing a loop that builds up a list in a
 parameter then you might consider using 'printf'.  'printf' has
-historically been somewhat neglected, but it is standard and
-fairly widely supported:
+historically been somewhat neglected by shell programmers, but
+it is standard and fairly widely supported:
 
 CODE
 printf 'format' argument1 argument2 ...
@@ -152,6 +295,30 @@ printf '%s\n' bash dash ksh sh
 In this case each argument gets printed on a separate line.  So this is
 like the loop 'for a in bash dash ksh sh; do echo "$a"; done'.  In fact
 in this case the 'printf' version is better for all sort of reasons.
+
+Caveat: if the first argument, the format, starts with a hypen,
+'-', then 'printf' may interpret it as an option.
+'printf --%s--' might complain about an unknown option or
+invalid option syntax.  Normally this isn't a problem, because
+the format argument is supplied as a literal and so you can tell
+if it starts with a hyphen or not.  In that case, or the case
+where the format argument is the result of a parameter
+expansion, use a leading '--' which will unambiguously signify the
+end of option process (refer to chapter XXX for the optin
+processing conventions).
+
+CODE
+printf -- -%s- foo bar baz
+printf -- "$@"
+/CODE
+
+Note that it is uncommon to use a parameter expansion for the
+format argument, mostly because you will need to control whether
+it has any '%' escapes in.  'printf "$1"' does not output '$1',
+it outputs '$1' if it has no '%' escapes in it.  The right way
+to output a variable is 'printf %s "$var"' (note that this will
+not output a trailing newline).
+
 
 
 
