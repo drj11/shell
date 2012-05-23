@@ -1,2 +1,4 @@
 Francis Irving for the exercise to estimate the block size used by head.
-Chris Blower for various helpful suggestions.
+Chris Blower for various helpful suggestions including the
+inspiration for "find . -name .git -print -prune  | while read
+a; do (cd $(dirname $a); git pull) ; done".
